@@ -30,4 +30,4 @@ jobs:
       with:
         app-name: 'hannl-hlo-bi2a5-app'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_49f5ff82637b40ebba8e2d87e2038d58 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_c5cdbe1d013d4091a4b97c3059cf5d74 }}
