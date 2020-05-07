@@ -20,6 +20,7 @@ test_data = [
 @app.route('/')
 def hello_world():
     global test_data
+
     return render_template('index.html', test_data=test_data)
 
 
@@ -33,7 +34,7 @@ def download():
                 f'{data["zoekwoord"]}\t{data["aantal"]}\t{data["link"]}\n')
     return send_file('data.tsv',
                      mimetype='text/csv',
-                     attachment_filename='test/csv',
+                     attachment_filename='data.tsv',
                      as_attachment=True)
 
 
@@ -46,6 +47,10 @@ def upldfile():
             filename = secure_filename(files.filename)
             app.logger.info('FileName: ' + filename)
             updir = os.path.join(basedir, 'upload/')
+            old_file = get_old_gen_panel_file()
+            file = os.path.join('upload', old_file)
+            old_dir = os.path.join(os.getcwd(), f'upload{os.path.sep}old_files')
+            os.rename(os.path.join(os.getcwd(), file), os.path.join(old_dir, old_file))
             files.save(os.path.join(updir, filename))
             return jsonify(filename=filename)
         else:
@@ -55,6 +60,12 @@ def upldfile():
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+
+
+def get_old_gen_panel_file():
+    for file in os.listdir(os.path.join(os.getcwd(), 'upload')):
+        if file.endswith('.txt'):
+            return file
 
 
 if __name__ == '__main__':
