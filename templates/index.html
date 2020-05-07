@@ -2,13 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>bi8a-Project</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/styles.css') }}">
     <script
             src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script defer
             src="{{ url_for('static', filename='js/index.js') }}"></script>
-    <title>bi8a-Project</title>
 </head>
 <body>
-Placeholder
+
+<a href="{{ url_for('download') }}">
+    <button class="download-button">
+        Download dataset
+    </button>
+</a>
+<form id="upload-form" method="post"
+      enctype="multipart/form-data" class="upload-form">
+    <label for="file" class="upload-file-label">Select Gen
+        Panel
+        File</label>
+    <input class="upload-file" name="file" type="file"
+           id="file"
+           title="Browse">
+    <button class="upload-button" id="submit"
+            type="button">Upload
+    </button>
+</form>
+<table class="content-table">
+    <thead>
+    <tr>
+        <th>Zoek woord</th>
+        <th>Aantal</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for data in test_data %}
+        <tr>
+            <td data-label="zoekwoord">{{ data['zoekwoord'] }}</td>
+            <td data-label="aantal"><a target="_blank"
+                                       href="{{ data['link'] }}">{{ data['aantal'] }}</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 </body>
 </html>
