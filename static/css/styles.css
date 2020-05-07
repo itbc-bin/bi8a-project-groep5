@@ -1,0 +1,4 @@
+th:hover,
+th:focus {
+    cursor: pointer;
+}
