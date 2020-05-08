@@ -11,7 +11,10 @@
   
 ### Ubuntu
 1. [Install](https://docs.docker.com/engine/install/ubuntu/) Docker (which is the same as the steps below)
-1. Remove any old versions of docker ```sudo apt-get remove docker docker-engine docker.io containerd runc```
+1. Remove any old versions of docker 
+    ```shell script
+    sudo apt-get remove docker docker-engine docker.io containerd runc
+    ```
 2. Upade the ```apt``` package index and install packages to allow ```apt``` to use a repository over HTTPS:
     ```shell script
     sudo apt-get update
