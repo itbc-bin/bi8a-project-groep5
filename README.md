@@ -60,3 +60,4 @@
     ```shell script
     docker-compose up
    ```
+3. Go to ```localhost:5000``` in your browser
