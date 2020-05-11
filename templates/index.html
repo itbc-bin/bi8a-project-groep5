@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="">
+    <head>
+        <meta charset="UTF-8">
+        <title>bi8a-Project</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.css" >
+    </head>
+    <body>
+        <div class="ui container">
+            <!-- HEADERS -->
+            <!-- h0 is ter spacing, ik vogel dit nog uit -->
+            <h0 class="ui small header"></h0>
+            <h1 class="ui teal icon header">
+                <i class="search icon"></i>
+                <div class="content">
+                    PubMed Article Searcher
+                    <div class="sub header">
+                    "Keeping gene panels updated since 2020"
+                    </div>
+                </div> </h1>
+            <!-- DIVIDERS -->
+            <div class="ui divider"></div>
+            <h2 class="ui large header">Search Tool</h2>
+                        <div class="ui divider"></div>
+
+            <!-- Vertical Divider -->
+            <div class="ui placeholder segment">
+                <div class="ui two column very relaxed stackable grid">
+                    <div class="column">
+                        <div class="ui form">
+                            <!-- Fields links van de UI grid form -->
+                            <div class="field"><label>Phenotype descriptors</label>
+                                <div class="ui left icon input"><input type="text" placeholder="Your descriptors"><i
+                                        class="search icon"></i>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Phenotypes</label>
+                                <!-- Dit veranderen naar fenotypes veld -->
+                                <div class="ui left icon input"><input type="password"><i class=" caret right icon"></i>
+                                </div>
+                            </div>
+                            <div class="ui teal submit button">Submit search</div>
+                        </div>
+                    </div>
+                    <div>
+                        <!--<table class="middle aligned column">-->
+                        <table class="ui celled table">
+                            <div class="bold text">Search results summary</div>
+                        <thread>
+                            <tr><th> Query  </th>
+                                <th> Symbols Searched </th>
+                                <th> # of articles found  </th>
+                            </tr></thread>
+                            <tbody>
+                                <tr>
+                                    <td data-label="Query">FOX2P</td>
+                                    <td data-label="Symbols">FOX1P</td>
+                                    <td data-label="# of articles found">4</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="ui vertical divider"></div>
+            </div>
+
+            <div class="ui divider"></div>
+            <h3 class="ui medium header">Search Results</h3>
+
+            <hr>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>
+    </body>
+</html>
