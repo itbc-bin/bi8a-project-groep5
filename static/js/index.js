@@ -1,5 +1,9 @@
-const tableHeaders = document.querySelectorAll(".content-table th")
+$(document).ready(function () {
 
+    $('.ui.dropdown')
+        .dropdown();
+
+});
 
 $(".download-button").on("click", () => {
     $.ajax({
@@ -27,6 +31,9 @@ $(function () {
         })
     });
 });
+
+const tableHeaders = document.querySelectorAll(".content-table th")
+
 
 tableHeaders.forEach(headerCell => {
     headerCell.addEventListener("click", () => {

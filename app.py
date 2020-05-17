@@ -16,6 +16,10 @@ test_data = [
      'link': 'https://twitter.com'}
 ]
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 
 @app.route('/indextest')
 def hello_world():

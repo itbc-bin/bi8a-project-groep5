@@ -1,91 +1,98 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="">
-    <head>
-        <meta charset="UTF-8">
-        <title>bi8a-Project</title>
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.css" >
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery/min.js"></script>
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8">
+    <title>bi8a-Project</title>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</head>
+<body>
 
 
-        <div class="ui container">
+<div class="ui container">
 
-            <!-- HEADERS -->
-            <h0 class="ui small header"></h0>
-            <h1 class="ui teal icon header">
-                <i class="search icon"></i>
-                <div class="content">
-                    PubMed Article Searcher
-                    <div class="sub header">
-                    "Keeping gene panels updated since 2020"
-                    </div>
-                </div> </h1>
-            <!-- DIVIDERS -->
-            <div class="ui divider"></div>
-            <h2 class="ui large header">Search Tool</h2>
-                        <div class="ui divider"></div>
-
-            <div class="ui container">
-            <!-- Dit veranderen naar fenotypes veld -->
-                <select name="Gene symbol" id="symbol-select" class="ui fluid multiple selection dropdown">
-                    <!--dropdown werkt op comma separated-->
-                    <option value="blank"> </option>
-                    <option value="sym1"> symbol 1</option>
-                    <option value="sym2"> symbol 2</option>
-                    <option value="sym3"> symbol 3</option>
-                    <option value="sym4"> symbol 4</option>
-                    <option value="sym5"> symbol 5</option>
-                    <option value="sym6"> symbol 6</option>
-                </select>
+    <!-- HEADERS -->
+    <h0 class="ui small header"></h0>
+    <h1 class="ui teal icon header">
+        <i class="search icon"></i>
+        <div class="content">
+            PubMed Article Searcher
+            <div class="sub header">
+                "Keeping gene panels updated since 2020"
             </div>
+        </div>
+    </h1>
+    <!-- DIVIDERS -->
+    <div class="ui divider"></div>
+    <h2 class="ui large header">Search Tool</h2>
+    <div class="ui divider"></div>
 
+    <div class="ui container">
+        <!-- Dit veranderen naar fenotypes veld -->
+    </div>
 
-            <!-- Vertical Divider -->
-            <div class="ui placeholder segment">
-                <div class="ui two column very relaxed stackable grid">
-                    <div class="column">
-                        <div class="ui form">
-                            <!-- Fields links van de UI grid form -->
-                            <div class="field"><label>Phenotype descriptors</label>
-                                <div class="ui left icon input"><input type="text" placeholder="Your descriptors"><i
-                                        class="search icon"></i>
-                                </div>
-                            </div>
-                            <div class="ui field">
-                            <!-- Dit veranderen naar fenotypes veld -->
-                            </div>
-                            <div class="ui teal submit button">Submit search</div>
+    <div class="ui labeled input">
+        <span class="label ui fluid">Display:</span>
+        <select name="Gene Symbols" multiple class="label ui selection fluid dropdown">
+            <option value="">ALL</option>
+            <option value="sym1"> symbol 1</option>
+            <option value="sym2"> symbol 2</option>
+            <option value="sym3"> symbol 3</option>
+            <option value="sym4"> symbol 4</option>
+            <option value="sym5"> symbol 5</option>
+            <option value="sym6"> symbol 6</option>
+        </select>
+    </div>
+    <!-- Vertical Divider -->
+    <div class="ui placeholder segment">
+        <div class="ui two column very relaxed stackable grid">
+            <div class="column">
+                <div class="ui form">
+                    <!-- Fields links van de UI grid form -->
+                    <div class="field"><label>Phenotype descriptors</label>
+                        <div class="ui left icon input"><input type="text"
+                                                               placeholder="Your descriptors"><i
+                                class="search icon"></i>
                         </div>
                     </div>
-                    <div>
-                        <!--<table class="middle aligned column">-->
-                        <table class="ui celled table">
-                            <div class="bold text">Search results summary</div>
-                        <thread>
-                            <tr><th> Query  </th>
-                                <th> Symbols Searched </th>
-                                <th> # of articles found  </th>
-                            </tr></thread>
-                            <tbody>
-                                <tr>
-                                    <td data-label="Query">FOX2P</td>
-                                    <td data-label="Symbols">FOX1P</td>
-                                    <td data-label="# of articles found">4</td>
-
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="ui field">
+                        <!-- Dit veranderen naar fenotypes veld -->
                     </div>
+                    <div class="ui teal submit button">Submit search</div>
                 </div>
-                <div class="ui vertical divider"></div>
             </div>
+            <div>
+                <!--<table class="middle aligned column">-->
+                <table class="ui celled table">
+                    <div class="bold text">Search results summary</div>
+                    <thread>
+                        <tr>
+                            <th> Query</th>
+                            <th> Symbols Searched</th>
+                            <th> # of articles found</th>
+                        </tr>
+                    </thread>
+                    <tbody>
+                    <tr>
+                        <td data-label="Query">FOX2P</td>
+                        <td data-label="Symbols">FOX1P</td>
+                        <td data-label="# of articles found">4</td>
 
-            <div class="ui divider"></div>
-            <h3 class="ui medium header">Search Results</h3>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
+        <div class="ui vertical divider"></div>
+    </div>
 
-            <hr>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>
-    </body>
+    <div class="ui divider"></div>
+    <h3 class="ui medium header">Search Results</h3>
+</div>
+
+<hr>
+</body>
 </html>
