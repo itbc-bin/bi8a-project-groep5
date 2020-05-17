@@ -3,12 +3,15 @@
     <head>
         <meta charset="UTF-8">
         <title>bi8a-Project</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.css" >
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.css" >
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery/min.js"></script>
     </head>
     <body>
+
+
         <div class="ui container">
+
             <!-- HEADERS -->
-            <!-- h0 is ter spacing, ik vogel dit nog uit -->
             <h0 class="ui small header"></h0>
             <h1 class="ui teal icon header">
                 <i class="search icon"></i>
@@ -23,6 +26,21 @@
             <h2 class="ui large header">Search Tool</h2>
                         <div class="ui divider"></div>
 
+            <div class="ui container">
+            <!-- Dit veranderen naar fenotypes veld -->
+                <select name="Gene symbol" id="symbol-select" class="ui fluid multiple selection dropdown">
+                    <!--dropdown werkt op comma separated-->
+                    <option value="blank"> </option>
+                    <option value="sym1"> symbol 1</option>
+                    <option value="sym2"> symbol 2</option>
+                    <option value="sym3"> symbol 3</option>
+                    <option value="sym4"> symbol 4</option>
+                    <option value="sym5"> symbol 5</option>
+                    <option value="sym6"> symbol 6</option>
+                </select>
+            </div>
+
+
             <!-- Vertical Divider -->
             <div class="ui placeholder segment">
                 <div class="ui two column very relaxed stackable grid">
@@ -34,11 +52,8 @@
                                         class="search icon"></i>
                                 </div>
                             </div>
-                            <div class="field">
-                                <label>Phenotypes</label>
-                                <!-- Dit veranderen naar fenotypes veld -->
-                                <div class="ui left icon input"><input type="password"><i class=" caret right icon"></i>
-                                </div>
+                            <div class="ui field">
+                            <!-- Dit veranderen naar fenotypes veld -->
                             </div>
                             <div class="ui teal submit button">Submit search</div>
                         </div>
@@ -68,9 +83,9 @@
 
             <div class="ui divider"></div>
             <h3 class="ui medium header">Search Results</h3>
+        </div>
 
             <hr>
-        </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>
     </body>
 </html>
