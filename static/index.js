@@ -1,5 +1,7 @@
 const tableHeaders = document.querySelectorAll(".content-table th")
 
+$('.label.ui.dropdown').dropdown();
+
 
 $(".download-button").on("click", () => {
     $.ajax({

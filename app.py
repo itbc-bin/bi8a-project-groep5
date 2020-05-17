@@ -16,11 +16,15 @@ test_data = [
      'link': 'https://twitter.com'}
 ]
 
+@app.route('/')
+def home_page():
+    return render_template('index.html')
+
 
 @app.route('/indextest')
 def hello_world():
     global test_data
-    return render_template('indextest.html', test_data=test_data)
+    return render_template('index.html', test_data=test_data)
 
 
 @app.route('/download', methods=['GET'])
