@@ -2,6 +2,17 @@ const tableHeaders = document.querySelectorAll(".content-table th")
 
 $('.label.ui.dropdown').dropdown();
 
+$('.trigger.example .accordion')
+  .accordion({
+    selector: {
+      trigger: '.title .icon'
+    }
+  })
+;
+
+$("index.html").ready(function () {
+    $('.ui.accordion').accordion('behavior');
+});
 
 $(".download-button").on("click", () => {
     $.ajax({

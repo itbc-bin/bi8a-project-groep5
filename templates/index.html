@@ -5,7 +5,9 @@
     <title>bi8a-Project</title>
     <link rel="stylesheet" type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery/min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
 </head>
 <body>
 
@@ -68,7 +70,7 @@
             </div>
             <div>
                 <!--<table class="middle aligned column">-->
-                <table class="ui celled table">
+                <table class="ui table table accordion">
                     <div class="bold text">Search results summary</div>
                     <thread>
                         <tr>
@@ -81,8 +83,19 @@
                     <tr>
                         <td data-label="Query">FOX2P</td>
                         <td data-label="Symbols">FOX1P</td>
-                        <td data-label="# of articles found">4</td>
-
+                        <td data-label="# of articles found">
+                            <div class="ui accordion">
+                                <div class="active title">
+                                    <i class="dropdown icon"><</i>
+                                    4 hits
+                                </div>
+                                <div class="active content">
+                                    <p>
+                                        Your links here
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -113,6 +126,6 @@
     </table>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>
+{#<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>#}
 </body>
 </html>
