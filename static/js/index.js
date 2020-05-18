@@ -1,8 +1,9 @@
 $(document).ready(function () {
+    $('.ui.dropdown').dropdown();
+});
 
-    $('.ui.dropdown')
-        .dropdown();
-
+$(document).ready(function () {
+    $('.ui.accordion').accordion();
 });
 
 $(".download-button").on("click", () => {
