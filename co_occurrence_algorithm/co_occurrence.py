@@ -1,5 +1,6 @@
 import itertools
 import re
+import os
 
 from nltk.tokenize import sent_tokenize
 
@@ -24,13 +25,13 @@ class CoOccurrence:
     true.
     """
 
-    def __init__(self, data, gene_symbols='GenPanels_merged_DG-2.17.0.tsv',
-                 phenotypes='gene_condition_source_id.txt', title=True,
+    def __init__(self, data, title=True,
                  in_sentence=True, in_abstract=True,
                  multiple_times_in_abstract=True):
+        self.__directory = f'co_occurrence_algorithm{os.sep}data_files'
         self.data_list = data
-        self.gene_symbols = gene_symbols
-        self.phenotypes = phenotypes
+        self.gene_symbols = os.path.join(self.__directory,'GenPanels_merged_DG-2.17.0.tsv')
+        self.phenotypes = os.path.join(self.__directory, 'gene_condition_source_id.txt')
         self.combinations = []
         self.title = title
         self.in_sentence = in_sentence
