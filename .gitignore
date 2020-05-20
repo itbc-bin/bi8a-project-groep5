@@ -1,4 +1,4 @@
-/virtualenv/
-/.idea/
-/__pycache__/
-/env/
+virtualenv/
+.idea/
+__pycache__/
+env/
