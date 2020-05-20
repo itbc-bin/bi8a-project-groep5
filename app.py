@@ -23,7 +23,8 @@ def test():
     test_co_occr.pre_process_data()
     test_co_occr.calculate_co_occurrence()
     co_occurr = test_co_occr.get_co_occurence()
-    return co_occurr
+    print(co_occurr)
+    return 'test'
 
 
 if __name__ == '__main__':
