@@ -1,52 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="">
 <head>
     <meta charset="UTF-8">
     <title>bi8a-Project</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/styles.css') }}">
-    <script
-            src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script defer
-            src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
 </head>
 <body>
 
-<a href="{{ url_for('download') }}">
-    <button class="download-button">
-        Download dataset
-    </button>
-</a>
-<form id="upload-form" method="post"
-      enctype="multipart/form-data" class="upload-form">
-    <label for="file" class="upload-file-label">Select Gen
-        Panel
-        File</label>
-    <input class="upload-file" name="file" type="file"
-           id="file"
-           title="Browse">
-    <button class="upload-button" id="submit"
-            type="button">Upload
-    </button>
-</form>
-<table class="content-table">
-    <thead>
-    <tr>
-        <th>Zoek woord</th>
-        <th>Aantal</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for data in test_data %}
+
+<div class="ui container">
+
+    <!-- HEADERS -->
+    <h0 class="ui small header"></h0>
+    <h1 class="ui teal icon header">
+        <i class="search icon"></i>
+        <div class="content">
+            PubMed Article Searcher
+            <div class="sub header">
+                "Keeping gene panels updated since 2020"
+            </div>
+        </div>
+    </h1>
+    <!-- DIVIDERS -->
+    <div class="ui divider"></div>
+    <h2 class="ui large header">Search Tool</h2>
+    <div class="ui divider"></div>
+
+    <div class="inline field">
+        <label>Enter Gene Symbols</label>
+
+        <div class="field">
+            <textarea></textarea>
+        </div>
+        <!--<script>-->
+            <!--$('.label.ui.dropdown').dropdown();-->
+        <!--</script>-->
+    </div>
+
+
+    <!-- Vertical Divider -->
+    <div class="ui placeholder segment">
+        <div class="ui two column very relaxed stackable grid">
+            <div class="column">
+                <div class="ui form">
+                    <!-- Fields links van de UI grid form -->
+                    <div class="field"><label>Phenotype descriptors</label>
+                        <div class="ui left icon input"><input type="text" placeholder="Your descriptors here"><i class="search icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="field"><label>Article date limit</label>
+                        <div class="ui left icon fluid input"><input type="text" placeholder="Fill earliest date to search from"><i class="calendar icon"></i>
+                        </div>
+                    </div>
+                    <div class="ui field">
+                    </div>
+                    <div class="ui teal submit button">Submit search</div>
+                    <br>
+                    <div class="ui teal upload button">Upload data</div>
+                </div>
+            </div>
+            <div>
+                <!--<table class="middle aligned column">-->
+                <table class="ui table table accordion">
+                    <div class="bold text">Search results summary</div>
+                    <thread>
+                        <tr>
+                            <th> Query</th>
+                            <th> Symbols Searched</th>
+                            <th> # of articles found</th>
+                        </tr>
+                    </thread>
+                    <tbody>
+                    <tr>
+                        <td data-label="Query">FOX2P</td>
+                        <td data-label="Symbols">FOX1P</td>
+                        <td data-label="# of articles found">
+                            <div class="ui accordion">
+                                <div class="active title">
+                                    <i class="dropdown icon"></i>
+                                    4 hits
+                                </div>
+                                <div class="active content">
+                                    <p>
+                                        Your links here
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="ui vertical divider"></div>
+    </div>
+
+    <hr>
+    <div class="ui divider"></div>
+    <h3 class="ui medium header">Search Results</h3>
+    <table class="ui celled table">
+        <div class="bold text">Full search results</div>
+        <thread>
+            <tr>
+                <th> Query</th>
+                <th> Alias</th>
+                <th> # of Articles</th>
+            </tr>
+        </thread>
+        <tbody>
         <tr>
-            <td data-label="zoekwoord">{{ data['zoekwoord'] }}</td>
-            <td data-label="aantal"><a target="_blank"
-                                       href="{{ data['link'] }}">{{ data['aantal'] }}</a>
-            </td>
+            <td data-label="Query">FOX2P</td>
+            <td data-label="Alias">gene alias</td>
+            <td data-label="# of Articles">4</td>
         </tr>
-    {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
+
+{#<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>#}
 </body>
 </html>

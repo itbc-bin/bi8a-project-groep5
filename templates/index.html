@@ -30,39 +30,65 @@
     <h2 class="ui large header">Search Tool</h2>
     <div class="ui divider"></div>
 
-    <div class="inline field">
-        <label>Select Gene Symbols</label>
-        <!-- Dit veranderen naar fenotypes veld -->
-        <select name="Gene Symbols" multiple="" class="label ui selection fluid dropdown">
-            <!--dropdown werkt op comma separated-->
-            <option value="">ALL</option>
-            <option value="sym1"> symbol 1</option>
-            <option value="sym2"> symbol 2</option>
-            <option value="sym3"> symbol 3</option>
-            <option value="sym4"> symbol 4</option>
-            <option value="sym5"> symbol 5</option>
-            <option value="sym6"> symbol 6</option>
-        </select>
-        <script>
-            $('.label.ui.dropdown').dropdown();
-        </script>
-    </div>
-
-
     <!-- Vertical Divider -->
     <div class="ui placeholder segment">
         <div class="ui two column very relaxed stackable grid">
             <div class="column">
                 <div class="ui form">
+                    <!-- Hier alle zooi voor in de form -->
                     <!-- Fields links van de UI grid form -->
                     <div class="field"><label>Phenotype descriptors</label>
-                        <div class="ui left icon input"><input type="text" placeholder="Your descriptors"><i
-                                class="search icon"></i>
+                        <div class="ui left icon input"><input type="text" placeholder="Your descriptors here"><i class="search icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="field"><label>Article date limit</label>
+                        <div class="ui left icon fluid input"><input type="text" placeholder="Fill earliest date to search from"><i class="calendar icon"></i>
                         </div>
                     </div>
                     <div class="ui field">
-                        <!-- Dit veranderen naar fenotypes veld -->
                     </div>
+                    <div class="inline field">
+                        <label>Enter Gene Symbols</label>
+                        <div class="field">
+                            <textarea rows="3"></textarea>
+                        </div>
+                    </div>
+                    <!-- Fluid dropdown -->
+                    <div class="inline field">
+                        <label>Select algorithm focus</label>
+                        <select name="Select algorithm combination" multiple="" class="label ui selection fluid  dropdown">
+                            <option value="Abstract">Abstract</option>
+                            <option value="Full Text">Full Text</option>
+                            <option value="Title">Title</option>
+                            <option value="Introduction">Introduction</option>
+                            <option value="Methods">Methods</option>
+                            <option value="Results">Results</option>
+                            <option value="Discussion">Discussion</option>
+                            <option value="Conclusion">Conclusion</option>
+                        </select>
+                        <script>
+                            $('.label.ui.dropdown').dropdown();
+                        </script>
+                    </div>
+                    <br>
+                        <div>
+                            <div class="ui checked checkbox">
+                                <input type="checkbox" checked="">
+                                <label>Notify me by e-mail when my results are ready!</label>
+                            </div>
+                            <div class="field"><label>E-mail:</label>
+                                <div class="ui left icon input"><input type="text" placeholder="Email"><i
+                                        class="mail icon"></i>
+                                </div>
+                            </div>
+                            <div class="field"><label>Job Title:</label>
+                                <div class="ui left icon input"><input type="text" placeholder="Job title"><i
+                                        class="clipboard icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    <br>
                     <div class="ui teal submit button">Submit search</div>
                     <br>
                     <div class="ui teal upload button">Upload data</div>
@@ -70,7 +96,7 @@
             </div>
             <div>
                 <!--<table class="middle aligned column">-->
-                <table class="ui table table accordion">
+                <table class="ui sortable large celled table ">
                     <div class="bold text">Search results summary</div>
                     <thread>
                         <tr>
@@ -80,25 +106,20 @@
                         </tr>
                     </thread>
                     <tbody>
+                    <!-- Dit moet nog aangepast worden naar dynamisch in te vullen data vanuit de zoekopdracht -->
                     <tr>
                         <td data-label="Query">FOX2P</td>
                         <td data-label="Symbols">FOX1P</td>
-                        <td data-label="# of articles found">
-                            <div class="ui accordion">
-                                <div class="active title">
-                                    <i class="dropdown icon"><</i>
-                                    4 hits
-                                </div>
-                                <div class="active content">
-                                    <p>
-                                        Your links here
-                                    </p>
-                                </div>
-                            </div>
-                        </td>
+                        <td data-label="# of articles found"><a href="http://example.com">
+                            Some #</a></td>
                     </tr>
                     </tbody>
+                    </thread>
                 </table>
+                <!-- Dit werkt dus nog niet, kon de juiste function call niet vinden -->
+                <script>
+                $('.table.ui.sortable').tablesort();
+                </script>
             </div>
         </div>
         <div class="ui vertical divider"></div>
@@ -112,20 +133,25 @@
         <thread>
             <tr>
                 <th> Query</th>
-                <th> Alias</th>
-                <th> # of Articles</th>
+                <th> Gene Symbol</th>
+                <th> Keywords</th>
+                <th> Article Title</th>
+                <th> Publication Date</th>
             </tr>
         </thread>
         <tbody>
         <tr>
             <td data-label="Query">FOX2P</td>
-            <td data-label="Alias">gene alias</td>
-            <td data-label="# of Articles">4</td>
+            <td data-label="Gene Symbols">Some Symbol</td>
+            <td data-label="Keywords">4</td>
+            <td data-label="Article Title">Insert a title</td>
+            <td data-label="Publication Date">19-4-2014</td>
         </tr>
         </tbody>
     </table>
 </div>
+<br><br><br><br>
 
-{#<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>#}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>
 </body>
 </html>
