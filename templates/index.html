@@ -9,40 +9,43 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
     <script src="{{ url_for('static', filename='index.js') }}"></script>
 </head>
+
 <body>
-
-
-<div class="ui container">
-
-    <!-- HEADERS -->
-    <h0 class="ui small header"></h0>
-    <h1 class="ui teal icon header">
-        <i class="search icon"></i>
-        <div class="content">
-            PubMed Article Searcher
-            <div class="sub header">
-                "Keeping gene panels updated since 2020"
-            </div>
-        </div>
-    </h1>
-    <!-- DIVIDERS -->
-    <div class="ui divider"></div>
-    <h2 class="ui large header">Search Tool</h2>
-    <div class="ui divider"></div>
-
-    <!-- Vertical Divider -->
-    <div class="ui placeholder segment">
-        <div class="ui two column very relaxed stackable grid">
-            <div class="column">
-                <div class="ui form">
-                    <!-- Hier alle zooi voor in de form -->
-                    <!-- Fields links van de UI grid form -->
-                    <div class="field"><label>Phenotype descriptors</label>
-                        <div class="ui left icon input"><input type="text" placeholder="Your descriptors here"><i class="search icon"></i>
-                        </div>
+    <div class="center aligned stackable ui page grid">
+        <div class="sixteen wide one column">
+            <!-- HEADERS -->
+            <!-- Sub top of the page -->
+            <h0 class="ui small header"></h0>
+            <h1 class="ui teal icon header">
+                <i class="search icon"></i>
+                <div class="content">
+                    PubMed Article Searcher
+                    <div class="sub header">
+                        "Keeping gene panels updated since 2020"
                     </div>
+                </div>
+            </h1>
+            <div class="ui divider"></div>
+            <!--<h2 class="ui large header">Search Tool</h2>-->
+            <!--<div class="ui divider"></div>-->
+        </div>
 
-                    <div class="field"><label>Article date limit</label>
+        <!-- User submitting form and summary table -->
+        <div class="ui horizontal segments">
+            <!--<div class="ui vertical segments">-->
+                <div class="ui teal segment">
+                <h2 class="ui large teal header">Search Tool</h2>
+                    <br>
+                    <div class="ui form">
+                        <!-- Hier alle zooi voor in de form -->
+                        <!-- Fields links van de UI grid form -->
+                        <div class="field"><label>Phenotype descriptors</label>
+                            <div class="ui left icon input"><input type="text"
+                                                                   placeholder="Your descriptors here"><i
+                                    class="search icon"></i>
+                            </div>
+                        </div>
+                        <div class="field"><label>Article date limit</label>
                         <div class="ui left icon fluid input"><input type="text" placeholder="Fill earliest date to search from"><i class="calendar icon"></i>
                         </div>
                     </div>
@@ -76,6 +79,7 @@
                             <div class="ui checked checkbox">
                                 <input type="checkbox" checked="">
                                 <label>Notify me by e-mail when my results are ready!</label>
+                                <br>
                             </div>
                             <div class="field"><label>E-mail:</label>
                                 <div class="ui left icon input"><input type="text" placeholder="Email"><i
@@ -88,16 +92,19 @@
                                 </div>
                             </div>
                         </div>
-                    <br>
+                        <br>
                     <div class="ui teal submit button">Submit search</div>
-                    <br>
+                        <br><br>
                     <div class="ui teal upload button">Upload data</div>
+
+
+                    </div>
                 </div>
-            </div>
-            <div>
-                <!--<table class="middle aligned column">-->
+            <!-- Summary Tabel -->
+            <div class="ui teal segment">
+                <h3 class="ui large teal header">Search results summary</h3>
+                <br>
                 <table class="ui sortable large celled table ">
-                    <div class="bold text">Search results summary</div>
                     <thread>
                         <tr>
                             <th> Query</th>
@@ -118,39 +125,45 @@
                 </table>
                 <!-- Dit werkt dus nog niet, kon de juiste function call niet vinden -->
                 <script>
-                $('.table.ui.sortable').tablesort();
+                    $('.table.ui.sortable').tablesort();
                 </script>
             </div>
-        </div>
-        <div class="ui vertical divider"></div>
-    </div>
 
-    <hr>
-    <div class="ui divider"></div>
-    <h3 class="ui medium header">Search Results</h3>
-    <table class="ui celled table">
-        <div class="bold text">Full search results</div>
-        <thread>
-            <tr>
-                <th> Query</th>
-                <th> Gene Symbol</th>
-                <th> Keywords</th>
-                <th> Article Title</th>
-                <th> Publication Date</th>
-            </tr>
-        </thread>
-        <tbody>
-        <tr>
-            <td data-label="Query">FOX2P</td>
-            <td data-label="Gene Symbols">Some Symbol</td>
-            <td data-label="Keywords">4</td>
-            <td data-label="Article Title">Insert a title</td>
-            <td data-label="Publication Date">19-4-2014</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-<br><br><br><br>
+        </div>
+        <!-- Big results table -->
+        <div class="sixteen wide one column">
+
+        <div class="ui divider">
+            <br><br>
+            <div class="left aligned ui segment">
+                <h4 class="ui large teal header">Full Search Results</h4>
+                <table class="ui celled table">
+                    <thread>
+                        <tr>
+                            <th> Query</th>
+                            <th> Gene Symbol</th>
+                            <th> Keywords</th>
+                            <th> Article Title</th>
+                            <th> Publication Date</th>
+                        </tr>
+                    </thread>
+                    <tbody>
+                    <tr>
+                        <td data-label="Query">FOX2P</td>
+                        <td data-label="Gene Symbols">Some Symbol</td>
+                        <td data-label="Keywords">4</td>
+                        <td data-label="Article Title">Insert a title</td>
+                        <td data-label="Publication Date">19-4-2014</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br><br><br><br>
+        </div>
+        </div>
+    </div>
+    </div>
+</body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>
 </body>
