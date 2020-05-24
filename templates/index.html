@@ -45,25 +45,35 @@
                                     class="search icon"></i>
                             </div>
                         </div>
-                        <div class="field"><label>Article date limit</label>
-                        <div class="ui left icon fluid input"><input type="text" placeholder="Fill earliest date to search from"><i class="calendar icon"></i>
-                        </div>
-                    </div>
-                    <div class="ui field">
-                    </div>
-                    <div class="inline field">
-                        <label>Enter Gene Symbols</label>
+
+
                         <div class="field">
-                            <textarea rows="3"></textarea>
+                            <label>Article date limit</label>
+                            <div class="ui calendar" id="rangestart">
+                                <div class="ui input left icon">
+                                    <i class="calendar icon"></i>
+                                    <input type="text" placeholder="Fill earliest date to search from">
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Fluid dropdown -->
-                    <div class="inline field">
-                        <label>Select algorithm focus</label>
-                        <select name="Select algorithm combination" multiple="" class="label ui selection fluid  dropdown">
-                            <option value="Abstract">Abstract</option>
-                            <option value="Full Text">Full Text</option>
-                            <option value="Title">Title</option>
+
+
+                        <div class="ui field">
+                        </div>
+                        <div class="inline field">
+                            <label>Enter Gene Symbols</label>
+                            <div class="field">
+                                <textarea rows="3"></textarea>
+                            </div>
+                        </div>
+                        <!-- Fluid dropdown -->
+                        <div class="inline field">
+                            <label>Select algorithm focus</label>
+                            <select name="Select algorithm combination" multiple=""
+                                    class="label ui selection fluid  dropdown">
+                                <option value="Abstract">Abstract</option>
+                                <option value="Full Text">Full Text</option>
+                                <option value="Title">Title</option>
                             <option value="Introduction">Introduction</option>
                             <option value="Methods">Methods</option>
                             <option value="Results">Results</option>

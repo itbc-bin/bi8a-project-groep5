@@ -10,20 +10,12 @@ $('.trigger.example .accordion')
   })
 ;
 
-$("index.html").ready(function () {
-//     $('.ui.accordion').accordion('behavior', );
-// });
-
-    $('.ui.accordion').each(function(i){
-        $(this).parent().accordion('behavior',i);
-        // $(this).parent().accordion('close',i);
-        if ($(this).parent().accordion('close', i)) {
-            $(this).parent().accordion('open',i);
-        } else {
-            $(this).parent().accordion('open',i);
-        }
-    });
+$(function () {
+	$('#rangestart').calendar();
 });
+
+
+
 
 
 // Sortable table (Van 28 tot 161)
