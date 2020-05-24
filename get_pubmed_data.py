@@ -55,8 +55,12 @@ def pubmed_search(search_term_pubmed='intellectual disability',
                     'PubDate']['Year']
 
             article_key_words = paper['MedlineCitation']['KeywordList']
-            print(article_key_words)
-    
+            
+
+            all_key_words = ', '.join(
+                [key_word for key_words in article_key_words for key_word in
+                 key_words])
+
             try:
                 abstract_info = \
                     paper['MedlineCitation']['Article']['Abstract'][
@@ -72,7 +76,7 @@ def pubmed_search(search_term_pubmed='intellectual disability',
                 "Title": article_title,
                 "Authors": article_authors,
                 "Publication_year": article_pub_year,
-                "Keywords": article_key_words,
+                "Keywords": all_key_words,
                 "Abstract": article_abstract,
                 "PMID": article_pmid,
                 "Link": article_link
@@ -85,9 +89,9 @@ def pubmed_search(search_term_pubmed='intellectual disability',
 
 
 
-    # print(pubmed_search_results["search"])
-    # for item in range(0,len(pubmed_search_results["result-dictionaries"])):
-    #     print(str(pubmed_search_results["result-dictionaries"][item]))
+    print(pubmed_search_results["search"])
+    for item in range(0,len(pubmed_search_results["result-dictionaries"])):
+        print(str(pubmed_search_results["result-dictionaries"][item]))
 
 
 
