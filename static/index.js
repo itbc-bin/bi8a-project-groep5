@@ -11,11 +11,8 @@ $('.trigger.example .accordion')
 ;
 
 $(function () {
-	$('#rangestart').calendar();
+    $('#rangestart').calendar({type: 'date'});
 });
-
-
-
 
 
 // Sortable table (Van 28 tot 161)

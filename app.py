@@ -1,4 +1,5 @@
 import os
+from pubmed_searcher import PubmedSearch
 
 from flask import Flask, render_template, request, jsonify, send_file
 from flask import Flask, render_template
@@ -8,6 +9,7 @@ app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['ALLOWED_EXTENSIONS'] = {'txt'}
 
+article_returns = []
 test_data = [
     {'zoekwoord': 'google', 'aantal': 5, 'link': 'https://google.com'},
     {'zoekwoord': 'facebook', 'aantal': 3,
@@ -16,9 +18,30 @@ test_data = [
      'link': 'https://twitter.com'}
 ]
 
+
 @app.route('/')
 def home_page():
-    return render_template('index.html')
+    # print(request.args.get("pheno_input"))
+    # print(request.args.get("symbols_input"))
+    # print("zo dus: ", request.args.get("calendar_input"))
+    global article_returns
+    term = ""
+
+    if request.args.get("pheno_input"):
+        term = request.args.get("pheno_input")
+        words = request.args.getlist("symbols_input")
+        email = request.args.get("input_mail")
+        print(words[0])
+        search = PubmedSearch(e_mail=email, search_word=term, gene_symbols=words[0],
+                              year=2015)
+        search.search_pubmed()
+        search.parse_results()
+        # search.insert_to_database()
+        article_returns.append(search.articles_data)
+    print(article_returns)
+
+    # print(request.args.getlist("focus_input"))
+    return render_template('index.html', articles=article_returns)
 
 
 @app.route('/indextest')
@@ -72,4 +95,5 @@ def get_old_gen_panel_file():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
+
