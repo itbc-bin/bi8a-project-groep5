@@ -47,11 +47,12 @@ class PubmedSearch:
             self.articles_data.append(
                 {'zoekwoord': gene_symbol, 'gezochte_symbolen': gene_symbols,
                  'aantal_hits': amount_ids, 'link': link_page})
-            id_handle = Entrez.efetch(db='pubmed',
-                                      retmode='xml',
-                                      id=ids)
-            articles = Entrez.read(id_handle)['PubmedArticle']
-            self.articles.append({gene_symbol: articles})
+            if ids:
+                id_handle = Entrez.efetch(db='pubmed',
+                                          retmode='xml',
+                                          id=ids)
+                articles = Entrez.read(id_handle)['PubmedArticle']
+                self.articles.append({gene_symbol: articles})
 
     def parse_results(self):
         for articles in self.articles:
@@ -151,10 +152,12 @@ class PubmedSearch:
             user='owe7_pg5@hannl-hlo-bioinformatica-mysqlsrv',
             database='owe7_pg5',
             password='blaat1234')
+
         return connection
 
     @staticmethod
     def get_symbols_from_database(gene_symbol):
+        gene_symbol = gene_symbol.strip()
         print("gene symbols: ", gene_symbol)
         connection = PubmedSearch.connection_database()
         cursor = connection.cursor()

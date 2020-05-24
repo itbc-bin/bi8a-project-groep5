@@ -126,21 +126,23 @@
                     </thead>
                     <tbody>
                     <!-- Dit moet nog aangepast worden naar dynamisch in te vullen data vanuit de zoekopdracht -->
-                    <tr>
-                        {% for item in articles %}
-                            {% for thing in item %}
-                            <td data-label="Query">{{ thing["zoekwoord"] }}</td>
-                            <td data-label="Symbols">{{ thing["gezochte_symbolen"] }}</td>
-                            <td data-label="# of articles found"><a href="{{thing["link"]}}">{{ thing["aantal_hits"] }}
+                    {% for item in articles %}
+                        {% for thing in item %}
+                            <tr>
+                                <td data-label="Query">{{ thing["zoekwoord"] }}</td>
+                                <td data-label="Symbols">{{ thing["gezochte_symbolen"] }}</td>
+                                <td data-label="# of articles found"><a target="_blank"
+                                        href="{{ thing["link"] }}">{{ thing["aantal_hits"] }}
                                 </a>
-                            </td>
-                            {% endfor %}
+                                </td>
+                            </tr>
 
                         {% endfor %}
-                    </tr>
+                    {% endfor %}
+
                     </tbody>
                 </table>
-{#                {% endif %}#}
+                {#                {% endif %}#}
                 <!-- Dit werkt dus nog niet, kon de juiste function call niet vinden -->
                 <script>
                     $('.table.ui.sortable').tablesort();
