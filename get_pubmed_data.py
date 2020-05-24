@@ -1,44 +1,21 @@
 from Bio import Entrez
-from flask import Flask, render_template, request
 
-app = Flask(__name__)
-
-
-# TODO
-# return dictionary met search_term+gensymbool
-# return lijst met alle sites ( searchterm+gensymbool)
-# return
-# functie om verbinding te maken met de database ( local database )
-
-@app.route('/')
-def hello_world():
-    return render_template('index.html')
+pubmed_search_results = {
+    "search": "",
+    "result-dictionaries": []
+}
 
 
-@app.route('/test')
-def pubmed_search():
-    search_term_pubmed = request.args.get('search_term')
-    gen_symbols_pubmed = request.args.get('gen_symbols')
-    if search_term_pubmed is None: search_term_pubmed = "intellectual disability"
-    if gen_symbols_pubmed is None: gen_symbols_pubmed = "PRRT2"
-
+def pubmed_search(search_term_pubmed='intellectual disability',
+                  gen_symbols_pubmed='PRRT2'):
     combined_search = "" + search_term_pubmed
     split_gen_sym = gen_symbols_pubmed.split(",")
     for word in split_gen_sym:
         combined_search += (" AND " + word)
 
-
-    html_code = """
-                <a href=/> HOME</a><br>
-                <form method="get">
-                Search term: <input type="text" name="search_term"><br>
-                Gene symbols: <input type="text" name="gen_symbols">
-                <input type="submit" value="Submit">
-                </form>
-                
-                For gen_symbols: split the terms by comma
-                <hr>
-                """
+    pubmed_search_results["search"] = (
+    "https://pubmed.ncbi.nlm.nih.gov/?term={}".format(
+        combined_search.replace(" ", "+")))
 
     Entrez.email = 'christiaanposthuma@gmail.com'
     handle = Entrez.esearch(db='pubmed',
@@ -76,12 +53,14 @@ def pubmed_search():
             article_pub_year = \
                 paper['MedlineCitation']['Article']['Journal']['JournalIssue'][
                     'PubDate']['Year']
-            article_key_words = paper['MedlineCitation']['KeywordList']
 
+            article_key_words = paper['MedlineCitation']['KeywordList']
+            print(article_key_words)
+    
             try:
                 abstract_info = \
-                paper['MedlineCitation']['Article']['Abstract'][
-                    'AbstractText']
+                    paper['MedlineCitation']['Article']['Abstract'][
+                        'AbstractText']
                 article_abstract = ' '.join(abstract_info)
             except:
                 article_abstract = '--'
@@ -98,19 +77,18 @@ def pubmed_search():
                 "PMID": article_pmid,
                 "Link": article_link
             }
-            print(results_dict)
-            print("\n" * 2)
-            # https://pubmed.ncbi.nlm.nih.gov/?term=disability+AND+autism+AND+baby
+
+            pubmed_search_results["result-dictionaries"].append(results_dict)
 
         except:
             pass
 
-    overall_link = ("https://pubmed.ncbi.nlm.nih.gov/?term={}".format(combined_search.replace(" ","+")))
-    print(overall_link)
-
-    # return results_dict,overall_link
-    return html_code
 
 
-if __name__ == '__main__':
-    app.run()
+    # print(pubmed_search_results["search"])
+    # for item in range(0,len(pubmed_search_results["result-dictionaries"])):
+    #     print(str(pubmed_search_results["result-dictionaries"][item]))
+
+
+
+pubmed_search()
