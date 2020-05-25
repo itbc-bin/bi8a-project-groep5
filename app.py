@@ -1,8 +1,13 @@
+import random
+import string
+
 from flask import Flask, render_template
 
 from co_occurrence_algorithm import co_occurrence
 
 app = Flask(__name__)
+
+result_ids = []
 
 
 @app.route('/')
@@ -27,5 +32,19 @@ def test():
     return 'test'
 
 
+@app.route('/results/<result_id>', methods=['POST'])
+def do_algorithm(result_id):
+    global result_ids
+
+    while result_id in result_ids:
+        result_id = ''.join(
+            random.choice(string.ascii_lowercase + string.digits) for _ in
+            range(22))
+
+    result_ids.append(result_id)
+
+
+
+
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
