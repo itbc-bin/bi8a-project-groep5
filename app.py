@@ -2,16 +2,18 @@ import os
 import random
 import string
 
-from flask import Flask, render_template, request, jsonify, send_file, json
+from flask import Flask, render_template, request, jsonify, send_file, json, \
+    session
 from werkzeug.utils import secure_filename
 
 from co_occurrence_algorithm.co_occurrence import CoOccurrence
 from pubmed_searcher import PubmedSearch
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'CnzOd54-fbuNu_X3_-PDzQ'
+app.config['ALLOWED_EXTENSIONS'] = {'txt'}
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['ALLOWED_EXTENSIONS'] = {'txt'}
 
 result_ids = []
 test_data = [
@@ -28,9 +30,9 @@ def home_page():
     # print(request.args.get("pheno_input"))
     # print(request.args.get("symbols_input"))
     # print("zo dus: ", request.args.get("calendar_input"))
-
+    if not session.get('data'):
+        session['data'] = []
     results = []
-    articles_data = []
     if request.args.get("pheno_input"):
         term = request.args.get("pheno_input")
         words = request.args.getlist("symbols_input")
@@ -43,10 +45,10 @@ def home_page():
         results = search.results
         # search.insert_to_database()
         articles_data = search.articles_data
-    print(articles_data)
+        session['data'].append(articles_data)
+    articles = session['data']
 
-    # print(request.args.getlist("focus_input"))
-    return render_template('index.html', articles=articles_data,
+    return render_template('index.html', articles=articles,
                            results=results)
 
 
@@ -58,16 +60,16 @@ def hello_world():
 
 @app.route('/download', methods=['GET'])
 def download():
-    print('mandje')
-    global test_data
-    with open('data.tsv', 'w') as file:
+    articles_data = session['data']
+    with open('data_files/data.tsv', 'w') as file:
         file.write('zoekwoord\taantal\tlink\n')
-        for data in test_data:
-            file.write(
-                f'{data["zoekwoord"]}\t{data["aantal"]}\t{data["link"]}\n')
-    return send_file('data.tsv',
+        for article_data in articles_data:
+            for data in article_data:
+                file.write(
+                    f'{data["zoekwoord"]}\t{data["aantal_hits"]}\t{data["link"]}\n')
+    return send_file('data_files/data.tsv',
                      mimetype='text/csv',
-                     attachment_filename='data.tsv',
+                     attachment_filename='data_files/data.tsv',
                      as_attachment=True)
 
 
@@ -182,7 +184,8 @@ def do_algorithm(result_id):
     # co_occurr = co_occurrence.get_co_occurence()
     # print('getting co-occurrentce')
     # print(co_occurr)
-    co_occur = {'PRRT2, Paroxysmal non-kinesigenic dyskinesia': 7, 'PRRT2, Paroxysmal kinesigenic dyskinesia': 7}
+    co_occur = {'PRRT2, Paroxysmal non-kinesigenic dyskinesia': 7,
+                'PRRT2, Paroxysmal kinesigenic dyskinesia': 7}
     # print(co_occur)
     return json.dumps({'status': 'OK', 'url': url, 'data': co_occur})
 

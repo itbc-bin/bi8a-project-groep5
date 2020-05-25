@@ -62,12 +62,23 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="field"><label>E-mail:</label>
+                        <div class="ui left icon input"><input
+                                type="text"
+                                placeholder="Email"
+                                name="input_mail"><i
+                                class="mail icon"></i>
+                        </div>
+                    </div>
+
                     <div class="ui field">
                     </div>
                     <div class="inline field">
                         <label>Enter Gene Symbols</label>
                         <div class="field">
-                            <textarea rows="3" name="symbols_input"></textarea>
+                                <textarea rows="3"
+                                          name="symbols_input"></textarea>
                         </div>
                     </div>
                     <input type="submit" class="ui teal submit button"
@@ -99,35 +110,32 @@
                                     ready!</label>
                                 <br>
                             </div>
-                            <div class="field"><label>E-mail:</label>
-                                <div class="ui left icon input"><input
-                                        type="text"
-                                        placeholder="Email"
-                                        name="input_mail"><i
-                                        class="mail icon"></i>
-                                </div>
+                        </div>
+                        <div class="field"><label>Job Title:</label>
+                            <div class="ui left icon input"><input
+                                    type="text"
+                                    placeholder="Job title"><i
+                                    class="clipboard icon"></i>
                             </div>
-                            <div class="field"><label>Job Title:</label>
-                                <div class="ui left icon input"><input
-                                        type="text"
-                                        placeholder="Job title"><i
-                                        class="clipboard icon"></i>
-                                </div>
-                            </div>
+                        </div>
                         </div>
                     {% endif %}
                     <br><br>
                     <button class="ui teal button test-button">Algorithm
                     </button>
                 {% endif %}
-            </div>
         </div>
+
         <!-- Summary Tabel -->
 
         <div class="ui teal segment">
             <h3 class="ui large teal header">Search results summary</h3>
             {% if articles %}
-            <button class="ui teal upload button" id="download-button">Download data</button>
+                <a href="{{ url_for('download') }}">
+                    <button class="ui teal upload button" id="download-button">
+                        Download data
+                    </button>
+                </a>
             {% endif %}
             <br>
             <table class="ui sortable large celled table ">
@@ -141,54 +149,57 @@
                 {% if articles %}
                     <tbody>
                     <!-- Dit moet nog aangepast worden naar dynamisch in te vullen data vanuit de zoekopdracht -->
-                    {% for item in articles %}
-                        <tr>
-                            <td data-label="Query">{{ item["zoekwoord"] }}</td>
-                            <td data-label="Symbols">{{ item["gezochte_symbolen"] }}</td>
-                            <td data-label="# of articles found"><a
-                                    target="_blank"
-                                    href="{{ item["link"] }}">{{ item["aantal_hits"] }}
-                            </a>
-                            </td>
-                        </tr>
+                    {% for article in articles %}
+                        {% for data in article %}
+                            <tr>
+                                <td data-label="Query">{{ data["zoekwoord"] }}</td>
+                                <td data-label="Symbols">{{ data["gezochte_symbolen"] }}</td>
+                                <td data-label="# of articles found"><a
+                                        target="_blank"
+                                        href="{{ data["link"] }}">{{ data["aantal_hits"] }}
+                                </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
                     {% endfor %}
                     </tbody>
                 {% endif %}
             </table>
         </div>
     </div>
+</div>
 
-    <!-- Big results table -->
-    <div class="sixteen wide one column">
+<!-- Big results table -->
+<div class="sixteen wide one column">
 
-        <div class="ui divider">
-            <br><br>
-            <div class="left aligned ui segment">
-                <h4 class="ui large teal header">Full Search Results</h4>
-                <table class="ui celled table">
-                    <thead>
-                    <tr>
-                        <th> Query</th>
-                        <th> Gene Symbol</th>
-                        <th> Keywords</th>
-                        <th> Article Title</th>
-                        <th> Publication Date</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td data-label="Query">FOX2P</td>
-                        <td data-label="Gene Symbols">Some Symbol</td>
-                        <td data-label="Keywords">4</td>
-                        <td data-label="Article Title">Insert a title</td>
-                        <td data-label="Publication Date">19-4-2014</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <br><br><br><br>
+    <div class="ui divider">
+        <br><br>
+        <div class="left aligned ui segment">
+            <h4 class="ui large teal header">Full Search Results</h4>
+            <table class="ui celled table">
+                <thead>
+                <tr>
+                    <th> Query</th>
+                    <th> Gene Symbol</th>
+                    <th> Keywords</th>
+                    <th> Article Title</th>
+                    <th> Publication Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td data-label="Query">FOX2P</td>
+                    <td data-label="Gene Symbols">Some Symbol</td>
+                    <td data-label="Keywords">4</td>
+                    <td data-label="Article Title">Insert a title</td>
+                    <td data-label="Publication Date">19-4-2014</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
+        <br><br><br><br>
     </div>
+</div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>
 </body>

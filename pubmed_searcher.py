@@ -1,5 +1,5 @@
-import warnings
 import os
+import warnings
 
 import mysql.connector
 from Bio import Entrez
@@ -41,12 +41,12 @@ class PubmedSearch:
 
             ids = Entrez.read(term_handle)['IdList']
             amount_ids = len(ids)
-            search_link = search_term.replace(' ', '+') \
-                .replace('(', '%28').replace(')', '%29')
-            link_page = f'https://pubmed.ncbi.nlm.nih.gov/?term={search_link}'
+            link = search_term.replace(' ', '+').replace('(', '%28').replace(')', '%29').replace('"', '%22').replace('[', '%5B').replace(']', '%5D')
+            url = f'https://pubmed.ncbi.nlm.nih.gov/?term={link}'
             self.articles_data.append(
                 {'zoekwoord': gene_symbol, 'gezochte_symbolen': gene_symbols,
-                 'aantal_hits': amount_ids, 'link': link_page})
+                 'aantal_hits': amount_ids, 'link': url})
+            print(self.articles_data)
             if ids:
                 id_handle = Entrez.efetch(db='pubmed',
                                           retmode='xml',
