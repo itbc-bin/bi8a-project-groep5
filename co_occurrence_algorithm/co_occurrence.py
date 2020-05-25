@@ -12,8 +12,6 @@ class CoOccurrence:
     used to search for new relationsips in articles. It takes about 7 minutes
     to calculate all of the possible (41709140) combinations.
     :param data: a list that contains dictionary with the info of an article.
-    :param gene_symbols: the file that contains the gene symbols.
-    :param phenotypes: the file that contains the phenotypes.
     :param title: boolean whether or not to include the title for the
     calculation. Default is true.
     :param in_sentence: boolean whether or not to inculde a sentence of the
@@ -50,9 +48,9 @@ class CoOccurrence:
         """
         for data in self.data_list:
             data_dict = {}
-            title = data['title']
+            title = data['Title']
             data_dict['title'] = title.strip()
-            abstract = self.__pre_process_abstract(data['abstract']).strip()
+            abstract = self.__pre_process_abstract(data['Abstract']).strip()
             abstract_sentences = sent_tokenize(abstract)
             data_dict['abstract'] = abstract_sentences
             self.tokenized.append(data_dict)
@@ -71,6 +69,7 @@ class CoOccurrence:
         different abstracts. A dictionary will be made that keeps track of
         combinations with a score higher than 0.
         """
+        print(len(self.combinations))
         for data in self.tokenized:
             for combination in self.combinations:
                 gene_space = f' {combination[0]} '
@@ -78,17 +77,17 @@ class CoOccurrence:
                 phenotype = combination[1].lower()
                 if self.title:
                     self.__check_part(gene_space, gene_parentheses,
-                                      phenotype, combination, data['title'],
+                                      phenotype, data['title'],
                                       10)
 
                 if self.in_sentence:
                     for sentence in data['abstract']:
                         self.__check_part(gene_space, gene_parentheses,
-                                          phenotype, combination, sentence, 5)
+                                          phenotype, sentence, 5)
                 if self.in_abstract:
                     abstract = ' '.join(data['abstract'])
                     self.__check_part(gene_space, gene_parentheses,
-                                      phenotype, combination, abstract, 2)
+                                      phenotype, abstract, 2)
 
         if self.multiple_times_in_abstract:
             all_abstracts = [' '.join(data['abstract']) for data in
@@ -105,10 +104,11 @@ class CoOccurrence:
                             and phenotype in abstract:
                         amount += 1
                 if amount > 1:
+                    gene = gene_space.strip()
                     try:
-                        self.co_occurrence[combination] += 1
+                        self.co_occurrence[f'{gene}, {phenotype}'] += 1
                     except KeyError:
-                        self.co_occurrence[combination] = 1
+                        self.co_occurrence[f'{gene}, {phenotype}'] = 1
 
     def get_co_occurence(self):
         """
@@ -135,7 +135,7 @@ class CoOccurrence:
         return abstract_data
 
     def __check_part(self, gene_space, gene_parentheses, phenotype,
-                     combination, part, amount):
+                     part, amount):
         """
         Checks is either one of the gene symbol types and the phenotype is
         present in a part of the article, which can be the title, abstract or
@@ -156,10 +156,11 @@ class CoOccurrence:
         if (gene_space in part
             or gene_parentheses in part) \
                 and phenotype in part:
+            gene = gene_space.strip()
             try:
-                self.co_occurrence[combination] += amount
+                self.co_occurrence[f'{gene}, {phenotype}'] += amount
             except KeyError:
-                self.co_occurrence[combination] = amount
+                self.co_occurrence[f'{gene}, {phenotype}'] = amount
 
     def __get_combinations(self):
         """
