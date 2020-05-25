@@ -30,10 +30,12 @@ def home_page():
     # print(request.args.get("pheno_input"))
     # print(request.args.get("symbols_input"))
     # print("zo dus: ", request.args.get("calendar_input"))
+    first_time = True
     if not session.get('data'):
         session['data'] = []
     results = []
     if request.args.get("pheno_input"):
+        first_time = False
         term = request.args.get("pheno_input")
         words = request.args.getlist("symbols_input")
         email = request.args.get("input_mail")
@@ -49,7 +51,7 @@ def home_page():
     articles = session['data']
 
     return render_template('index.html', articles=articles,
-                           results=results)
+                           results=results, first_time=first_time)
 
 
 @app.route('/indextest')

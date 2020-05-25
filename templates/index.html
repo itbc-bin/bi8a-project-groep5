@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>
     <script defer src="{{ url_for('static', filename='index.js') }}"></script>
     <script src="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.js"></script>
     <script>let results = {{ results | safe }}</script>
@@ -33,7 +33,8 @@
         <!--<h2 class="ui large header">Search Tool</h2>-->
         <!--<div class="ui divider"></div>-->
     </div>
-
+{% if first_time %}
+    <!-- first time entering page -->
     <!-- User submitting form and summary table -->
     <div class="ui horizontal segments">
         <!--<div class="ui vertical segments">-->
@@ -85,45 +86,103 @@
                            value="Submit search" name="submit_button">
                 </form>
                 <br><br>
-                {% if results %}
-                    <!-- Fluid dropdown -->
-                    {% if results %}
-                        <div class="inline field">
-                            <label>Select algorithm focus</label>
-                            <select multiple=""
-                                    class="label ui selection fluid dropdown"
-                                    name="focus_input"
-                                    id="multiple_select">
-                                <option value="Title">Title</option>
-                                <option value="Sentence">Sentence</option>
-                                <option value="Abstract">Abstract</option>
-                                <option value="Multiple Abstracts">Multiple
-                                    Abstracts
-                                </option>
-                            </select>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if results %}
+    <!-- User submitting form and summary table -->
+    <div class="ui horizontal segments">
+        <!--<div class="ui vertical segments">-->
+        <div class="ui teal segment">
+            <h2 class="ui large teal header">Search Tool</h2>
+            <br>
+            <div class="ui form">
+                <form method="get" action="/">
+                    <!-- Hier alle zooi voor in de form -->
+                    <!-- Fields links van de UI grid form -->
+                    <div class="field"><label>Phenotype descriptors</label>
+                        <div class="ui left icon input"><input type="text"
+                                                               placeholder="Your descriptors here"
+                                                               name="pheno_input"><i
+                                class="search icon"></i>
                         </div>
+                    </div>
+                    <div class="field">
+                        <label>Article date limit</label>
+                        <div class="ui calendar" id="rangestart">
+                            <div class="ui input left icon">
+                                <i class="calendar icon"></i>
+                                <input type="text"
+                                       placeholder="Fill earliest date to search from"
+                                       name="calendar_input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field"><label>E-mail:</label>
+                        <div class="ui left icon input"><input
+                                type="text"
+                                placeholder="Email"
+                                name="input_mail"><i
+                                class="mail icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="ui field">
+                    </div>
+                    <div class="inline field">
+                        <label>Enter Gene Symbols</label>
+                        <div class="field">
+                                <textarea rows="3"
+                                          name="symbols_input"></textarea>
+                        </div>
+                    </div>
+                    <input type="submit" class="ui teal submit button"
+                           value="Submit search" name="submit_button">
+                </form>
+                <br><br>
+
+                <!-- Fluid dropdown -->
+                {#            {% if results %}#}
+                <div class="inline field">
+                    <label>Select algorithm focus</label>
+                    <select multiple=""
+                            class="label ui selection fluid dropdown"
+                            name="focus_input"
+                            id="multiple_select">
+                        <option value="Title">Title</option>
+                        <option value="Sentence">Sentence</option>
+                        <option value="Abstract">Abstract</option>
+                        <option value="Multiple Abstracts">Multiple
+                            Abstracts
+                        </option>
+                    </select>
+                </div>
+                <br>
+                <div>
+                    <div class="ui checked checkbox">
+                        <input type="checkbox" checked="">
+                        <label>Notify me by e-mail when my results are
+                            ready!</label>
                         <br>
-                        <div>
-                            <div class="ui checked checkbox">
-                                <input type="checkbox" checked="">
-                                <label>Notify me by e-mail when my results are
-                                    ready!</label>
-                                <br>
-                            </div>
-                        </div>
-                        <div class="field"><label>Job Title:</label>
-                            <div class="ui left icon input"><input
-                                    type="text"
-                                    placeholder="Job title"><i
-                                    class="clipboard icon"></i>
-                            </div>
-                        </div>
-                        </div>
-                    {% endif %}
-                    <br><br>
-                    <button class="ui teal button test-button">Algorithm
-                    </button>
-                {% endif %}
+                    </div>
+                </div>
+                <div class="field"><label>Job Title:</label>
+                    <div class="ui left icon input"><input
+                            type="text"
+                            placeholder="Job title"><i
+                            class="clipboard icon"></i>
+                    </div>
+                </div>
+            </div>
+            {#            {% endif %}#}
+            <br><br>
+            <button class="ui teal button test-button">Algorithm
+            </button>
+
         </div>
 
         <!-- Summary Tabel -->
@@ -167,41 +226,41 @@
             </table>
         </div>
     </div>
-</div>
+{% endif %}
 
 <!-- Big results table -->
-<div class="sixteen wide one column">
+{% if articles %}
+    <div class="sixteen wide one column">
 
-    <div class="ui divider">
-        <br><br>
-        <div class="left aligned ui segment">
-            <h4 class="ui large teal header">Full Search Results</h4>
-            <table class="ui celled table">
-                <thead>
-                <tr>
-                    <th> Query</th>
-                    <th> Gene Symbol</th>
-                    <th> Keywords</th>
-                    <th> Article Title</th>
-                    <th> Publication Date</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td data-label="Query">FOX2P</td>
-                    <td data-label="Gene Symbols">Some Symbol</td>
-                    <td data-label="Keywords">4</td>
-                    <td data-label="Article Title">Insert a title</td>
-                    <td data-label="Publication Date">19-4-2014</td>
-                </tr>
-                </tbody>
-            </table>
+        <div class="ui divider">
+            <br><br>
+            <div class="left aligned ui segment">
+                <h4 class="ui large teal header">Full Search Results</h4>
+                <table class="ui celled table">
+                    <thead>
+                    <tr>
+                        <th> Query</th>
+                        <th> Gene Symbol</th>
+                        <th> Keywords</th>
+                        <th> Article Title</th>
+                        <th> Publication Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td data-label="Query">FOX2P</td>
+                        <td data-label="Gene Symbols">Some Symbol</td>
+                        <td data-label="Keywords">4</td>
+                        <td data-label="Article Title">Insert a title</td>
+                        <td data-label="Publication Date">19-4-2014</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br><br><br><br>
         </div>
-        <br><br><br><br>
     </div>
-</div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>
+{% endif %}
 </body>
 </html>
 
