@@ -1,2 +1,3 @@
 zoekwoord	aantal	link
-PRRT2	17	https://pubmed.ncbi.nlm.nih.gov/?term=intellectual%20disability%20AND%20(PRRT2%20OR%20ICCA%20OR%20DYT10%20OR%20FLJ25513%20OR%20DKFZp547J199%20OR%20IFITMD1%20OR%20FICCA%20OR%20DSPB3%20OR%20PKC%20OR%20EKD1)%20AND%20(%222015%22[Date%20-%20Publication]%20:%20%223000%22[Date%20-%20Publication])
+PRRT2	33	https://pubmed.ncbi.nlm.nih.gov/?term=intellectual+disability+AND+%28PRRT2+OR+ICCA+OR+DYT10+OR+FLJ25513+OR+DKFZp547J199+OR+IFITMD1+OR+FICCA+OR+DSPB3+OR+PKC+OR+EKD1%29+AND+%28%222000/01/01%22%5BDate+-+Publication%5D+:+%223000%22%5BDate+-+Publication%5D%29
+KCNMA1	14	https://pubmed.ncbi.nlm.nih.gov/?term=intellectual+disability+AND+%28KCNMA1+OR+SLO+OR+KCa1.1+OR+mSLO1%29+AND+%28%222000/01/01%22%5BDate+-+Publication%5D+:+%223000%22%5BDate+-+Publication%5D%29

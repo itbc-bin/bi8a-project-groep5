@@ -9,15 +9,17 @@ $(document).ready(function () {
     $(".test-button").on("click", () => {
         const id = '_' + Math.random().toString(36).substr(2, 9);
         const options = $('#multiple_select option:selected').toArray().map(item => item.text);
-        const data = {options: options, results: results}
+        const jobTitle = $('#job-title').val();
+        const sendMail = $('#notify').is(":checked");
+        const data = {options: options, jobTitle: jobTitle, sendMail: sendMail};
+        console.log(data)
         $.ajax({
             type: 'POST',
             dataType: 'json',
-            data: JSON.stringify(data),
+            data: {data: JSON.stringify(data)},
             url: `/results/${id}`,
             async: true,
             success: [function (response) {
-                console.log(response.data)
                 $(".extra-link").remove();
                 $(".form").append(`<p class="extra-link">URL: <a href="${response.url}" target="_blank">Results</a></p>`);
             }],
@@ -175,17 +177,6 @@ $(function () {
 
 })(window.Zepto || window.jQuery);
 
-$("#download-button").on("click", () => {
-    console.log('yeet');
-    $.ajax({
-        type: 'GET',
-        url: '/download',
-        contentType: 'csv',
-        cache: false,
-        processData: false,
-        async: false,
-    })
-});
 
 $(function () {
     $('#submit').click(() => {

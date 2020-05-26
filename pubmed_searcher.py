@@ -1,37 +1,47 @@
-import os
 import warnings
+from datetime import datetime
 
 import mysql.connector
 from Bio import Entrez
 
 warnings.filterwarnings('ignore', message='Numerical issues were encountered')
 
+# TODO write documentation
+# TODO handle bugs
 
 class PubmedSearch:
 
-    def __init__(self, e_mail, search_word, gene_symbols, year=2000):
+    def __init__(self, e_mail, search_word, gene_symbols,
+                 date='January 1, 2000'):
         self.email = e_mail
-        self.search_word = search_word
+        self.api_key = '70603012ca2859e88695f0dae2d6dc988308'
+        self.search_word = search_word.strip()
         self.gene_symbols = gene_symbols
-        self.year = year
+        self.date = datetime.strptime(date, '%B %d, %Y').strftime('%Y/%m/%d')
+        self.ids_data = []
         self.articles_data = []
         self.articles = []
         self.results = []
 
     def search_pubmed(self):
         Entrez.email = self.email
-        for gene_symbol in self.gene_symbols.split(os.linesep):
+        Entrez.api_key = self.api_key
+        for gene_symbol in self.gene_symbols.split('\n'):
+            gene_symbol = gene_symbol.strip()
             gene_symbols = self.get_symbols_from_database(gene_symbol)
             all_aliases = gene_symbols.split(',')
-            search_term = f'{self.search_word} AND ({gene_symbol}'
-            for counter, symbol in enumerate(all_aliases):
-                if counter == 0:
-                    continue
-                if counter == len(all_aliases) - 1:
-                    search_term += f' OR {symbol.strip()})'
-                    break
-                search_term += f' OR {symbol.strip()}'
-            search_term += f' AND ("{self.year}"[Date - Publication] : ' \
+            if len(all_aliases) == 1:
+                search_term = f'{self.search_word} AND {gene_symbol}'
+            else:
+                search_term = f'{self.search_word} AND ({gene_symbol}'
+                for counter, symbol in enumerate(all_aliases):
+                    if counter == 0:
+                        continue
+                    if counter == len(all_aliases) - 1:
+                        search_term += f' OR {symbol.strip()})'
+                        break
+                    search_term += f' OR {symbol.strip()}'
+            search_term += f' AND ("{self.date}"[Date - Publication] : ' \
                            f'"3000"[Date - Publication])'
             term_handle = Entrez.esearch(db='pubmed',
                                          sort='relevance',
@@ -41,20 +51,28 @@ class PubmedSearch:
 
             ids = Entrez.read(term_handle)['IdList']
             amount_ids = len(ids)
-            link = search_term.replace(' ', '+').replace('(', '%28').replace(')', '%29').replace('"', '%22').replace('[', '%5B').replace(']', '%5D')
+            link = search_term.replace(' ', '+').replace('(', '%28').replace(
+                ')', '%29').replace('"', '%22').replace('[', '%5B').replace(
+                ']', '%5D')
             url = f'https://pubmed.ncbi.nlm.nih.gov/?term={link}'
             self.articles_data.append(
-                {'zoekwoord': gene_symbol, 'gezochte_symbolen': gene_symbols,
+                {'zoekwoord': gene_symbol.strip(),
+                 'gezochte_symbolen': gene_symbols,
                  'aantal_hits': amount_ids, 'link': url})
-            print(self.articles_data)
-            if ids:
+
+            self.ids_data.append({'ids': ids, 'gene_symbol': gene_symbol})
+
+    def __parse_ids(self):
+        for data in self.ids_data:
+            if data['ids']:
                 id_handle = Entrez.efetch(db='pubmed',
                                           retmode='xml',
-                                          id=ids)
+                                          id=data['ids'])
                 articles = Entrez.read(id_handle)['PubmedArticle']
-                self.articles.append({gene_symbol: articles})
+                self.articles.append({data['gene_symbol']: articles})
 
     def parse_results(self):
+        self.__parse_ids()
         for articles in self.articles:
             for symbol, article in articles.items():
                 for article_info in article:
@@ -131,15 +149,18 @@ class PubmedSearch:
             link = article['Link']
             abstract = article['Abstract'].replace("'", "''")
             authors = article['Authors'].replace("'", "''")
-            cursor.execute(
-                "insert into articles(pubmed_id, title, publication_year, "
-                "keywords, article_link, abstract, authors) values ('{}',"
-                "'{}','{}','{}','{}','{}','{}')".format(pmid,
-                                                        title, pub_year,
-                                                        keywords, link,
-                                                        abstract,
-                                                        authors))
-            connection.commit()
+            try:
+                cursor.execute(
+                    "insert into articles(pubmed_id, title, publication_year, "
+                    "keywords, article_link, abstract, authors) values ('{}',"
+                    "'{}','{}','{}','{}','{}','{}')".format(pmid,
+                                                            title, pub_year,
+                                                            keywords, link,
+                                                            abstract,
+                                                            authors))
+                connection.commit()
+            except mysql.connector.errors.IntegrityError:
+                pass
         connection.close()
 
     @staticmethod
@@ -165,15 +186,6 @@ class PubmedSearch:
                        " = '{}';".format(gene_symbol))
         results = cursor.fetchall()
         connection.close()
-        return ', '.join(results[0])
-
-
-if __name__ == '__main__':
-    term = 'intellectual disability'
-    words = 'PRRT2\nKCNMA1'
-    email = 'christiaanposthuma@gmail.com'
-    search = PubmedSearch(e_mail=email, search_word=term, gene_symbols=words,
-                          year=2015)
-    search.search_pubmed()
-    search.parse_results()
-    search.insert_to_database()
+        if results:
+            return ', '.join(filter(None, results[0]))
+        return gene_symbol

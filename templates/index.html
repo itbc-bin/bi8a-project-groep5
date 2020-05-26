@@ -10,7 +10,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>
     <script defer src="{{ url_for('static', filename='index.js') }}"></script>
     <script src="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.js"></script>
-    <script>let results = {{ results | safe }}</script>
+    <script>
+        let articles = {{ articles | safe }};
+    </script>
 
 </head>
 
@@ -33,66 +35,68 @@
         <!--<h2 class="ui large header">Search Tool</h2>-->
         <!--<div class="ui divider"></div>-->
     </div>
-{% if first_time %}
-    <!-- first time entering page -->
-    <!-- User submitting form and summary table -->
-    <div class="ui horizontal segments">
-        <!--<div class="ui vertical segments">-->
-        <div class="ui teal segment">
-            <h2 class="ui large teal header">Search Tool</h2>
-            <br>
-            <div class="ui form">
-                <form method="get" action="/">
-                    <!-- Hier alle zooi voor in de form -->
-                    <!-- Fields links van de UI grid form -->
-                    <div class="field"><label>Phenotype descriptors</label>
-                        <div class="ui left icon input"><input type="text"
-                                                               placeholder="Your descriptors here"
-                                                               name="pheno_input"><i
-                                class="search icon"></i>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label>Article date limit</label>
-                        <div class="ui calendar" id="rangestart">
-                            <div class="ui input left icon">
-                                <i class="calendar icon"></i>
-                                <input type="text"
-                                       placeholder="Fill earliest date to search from"
-                                       name="calendar_input">
+    {% if first_time %}
+        <!-- first time entering page -->
+        <!-- User submitting form and summary table -->
+        <div class="ui horizontal segments">
+            <!--<div class="ui vertical segments">-->
+            <div class="ui teal segment">
+                <h2 class="ui large teal header">Search Tool</h2>
+                <br>
+                <div class="ui form">
+                    <form method="get" action="/">
+                        <!-- Hier alle zooi voor in de form -->
+                        <!-- Fields links van de UI grid form -->
+                        <div class="field"><label>Phenotype descriptors</label>
+                            <div class="ui left icon input"><input type="text"
+                                                                   placeholder="Your descriptors here"
+                                                                   name="pheno_input"
+                                                                   required><i
+                                    class="search icon"></i>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="field"><label>E-mail:</label>
-                        <div class="ui left icon input"><input
-                                type="text"
-                                placeholder="Email"
-                                name="input_mail"><i
-                                class="mail icon"></i>
-                        </div>
-                    </div>
-
-                    <div class="ui field">
-                    </div>
-                    <div class="inline field">
-                        <label>Enter Gene Symbols</label>
                         <div class="field">
+                            <label>Article date limit</label>
+                            <div class="ui calendar" id="rangestart">
+                                <div class="ui input left icon">
+                                    <i class="calendar icon"></i>
+                                    <input type="text"
+                                           placeholder="Fill earliest date to search from"
+                                           name="calendar_input">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field"><label>E-mail:</label>
+                            <div class="ui left icon input"><input
+                                    type="text"
+                                    placeholder="Email"
+                                    name="input_mail"
+                                    required><i
+                                    class="mail icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="ui field">
+                        </div>
+                        <div class="inline field">
+                            <label>Enter Gene Symbols</label>
+                            <div class="field">
                                 <textarea rows="3"
                                           name="symbols_input"></textarea>
+                            </div>
                         </div>
-                    </div>
-                    <input type="submit" class="ui teal submit button"
-                           value="Submit search" name="submit_button">
-                </form>
-                <br><br>
+                        <input type="submit" class="ui teal submit button"
+                               value="Submit search" name="submit_button">
+                    </form>
+                    <br><br>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-{% endif %}
+        </div>
+    {% endif %}
 
-{% if results %}
+{% if articles %}
     <!-- User submitting form and summary table -->
     <div class="ui horizontal segments">
         <!--<div class="ui vertical segments">-->
@@ -164,7 +168,7 @@
                 <br>
                 <div>
                     <div class="ui checked checkbox">
-                        <input type="checkbox" checked="">
+                        <input type="checkbox" checked="" id="notify">
                         <label>Notify me by e-mail when my results are
                             ready!</label>
                         <br>
@@ -173,8 +177,10 @@
                 <div class="field"><label>Job Title:</label>
                     <div class="ui left icon input"><input
                             type="text"
-                            placeholder="Job title"><i
-                            class="clipboard icon"></i>
+                            placeholder="Job title"
+                            id="job-title"><i
+                            class=" clipboard icon"
+                        ></i>
                     </div>
                 </div>
             </div>
@@ -209,27 +215,23 @@
                     <tbody>
                     <!-- Dit moet nog aangepast worden naar dynamisch in te vullen data vanuit de zoekopdracht -->
                     {% for article in articles %}
-                        {% for data in article %}
-                            <tr>
-                                <td data-label="Query">{{ data["zoekwoord"] }}</td>
-                                <td data-label="Symbols">{{ data["gezochte_symbolen"] }}</td>
-                                <td data-label="# of articles found"><a
-                                        target="_blank"
-                                        href="{{ data["link"] }}">{{ data["aantal_hits"] }}
-                                </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
+                        <tr>
+                            <td data-label="Query">{{ article["zoekwoord"] }}</td>
+                            <td data-label="Symbols">{{ article["gezochte_symbolen"] }}</td>
+                            <td data-label="# of articles found"><a
+                                    target="_blank"
+                                    href="{{ article["link"] }}">{{ article["aantal_hits"] }}
+                            </a>
+                            </td>
+                        </tr>
                     {% endfor %}
                     </tbody>
                 {% endif %}
             </table>
         </div>
     </div>
-{% endif %}
 
-<!-- Big results table -->
-{% if articles %}
+    <!-- Big results table -->
     <div class="sixteen wide one column">
 
         <div class="ui divider">
