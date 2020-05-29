@@ -11,7 +11,10 @@
     <script defer src="{{ url_for('static', filename='index.js') }}"></script>
     <script src="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.js"></script>
     <script>
-        let articles = {{ articles | safe }};
+        let results = {{ results | safe }};
+        let email = '{{ email | safe }}';
+        let ids = {{ ids_data | safe }};
+        let term = '{{ term | safe }}';
     </script>
 
 </head>
@@ -83,7 +86,8 @@
                             <label>Enter Gene Symbols</label>
                             <div class="field">
                                 <textarea rows="3"
-                                          name="symbols_input"></textarea>
+                                          name="symbols_input"
+                                          required></textarea>
                             </div>
                         </div>
                         <input type="submit" class="ui teal submit button"
@@ -96,7 +100,7 @@
         </div>
     {% endif %}
 
-{% if articles %}
+{% if results %}
     <!-- User submitting form and summary table -->
     <div class="ui horizontal segments">
         <!--<div class="ui vertical segments">-->
@@ -110,7 +114,8 @@
                     <div class="field"><label>Phenotype descriptors</label>
                         <div class="ui left icon input"><input type="text"
                                                                placeholder="Your descriptors here"
-                                                               name="pheno_input"><i
+                                                               name="pheno_input"
+                                                               required><i
                                 class="search icon"></i>
                         </div>
                     </div>
@@ -130,7 +135,8 @@
                         <div class="ui left icon input"><input
                                 type="text"
                                 placeholder="Email"
-                                name="input_mail"><i
+                                name="input_mail"
+                                required><i
                                 class="mail icon"></i>
                         </div>
                     </div>
@@ -141,7 +147,8 @@
                         <label>Enter Gene Symbols</label>
                         <div class="field">
                                 <textarea rows="3"
-                                          name="symbols_input"></textarea>
+                                          name="symbols_input"
+                                          required></textarea>
                         </div>
                     </div>
                     <input type="submit" class="ui teal submit button"
@@ -150,15 +157,14 @@
                 <br><br>
 
                 <!-- Fluid dropdown -->
-                {#            {% if results %}#}
                 <div class="inline field">
                     <label>Select algorithm focus</label>
                     <select multiple=""
                             class="label ui selection fluid dropdown"
                             name="focus_input"
                             id="multiple_select">
-                        <option value="Title">Title</option>
-                        <option value="Sentence">Sentence</option>
+                        <option value="Title" selected>Title</option>
+                        <option value="Sentence" selected>Sentence</option>
                         <option value="Abstract">Abstract</option>
                         <option value="Multiple Abstracts">Multiple
                             Abstracts
@@ -180,7 +186,7 @@
                             placeholder="Job title"
                             id="job-title"><i
                             class=" clipboard icon"
-                        ></i>
+                    ></i>
                     </div>
                 </div>
             </div>
@@ -195,8 +201,8 @@
 
         <div class="ui teal segment">
             <h3 class="ui large teal header">Search results summary</h3>
-            {% if articles %}
-                <a href="{{ url_for('download') }}">
+            {% if results %}
+                <a href="{{ url_for('download', results=[results], email=email) }}">
                     <button class="ui teal upload button" id="download-button">
                         Download data
                     </button>
@@ -211,16 +217,16 @@
                     <th> # of articles found</th>
                 </tr>
                 </thead>
-                {% if articles %}
+                {% if results %}
                     <tbody>
                     <!-- Dit moet nog aangepast worden naar dynamisch in te vullen data vanuit de zoekopdracht -->
-                    {% for article in articles %}
+                    {% for result in results %}
                         <tr>
-                            <td data-label="Query">{{ article["zoekwoord"] }}</td>
-                            <td data-label="Symbols">{{ article["gezochte_symbolen"] }}</td>
+                            <td data-label="Query">{{ result["search_word"] }}</td>
+                            <td data-label="Symbols">{{ result["searched_gene_symbols"] }}</td>
                             <td data-label="# of articles found"><a
                                     target="_blank"
-                                    href="{{ article["link"] }}">{{ article["aantal_hits"] }}
+                                    href="{{ result["link"] }}">{{ result["amount_hits"] }}
                             </a>
                             </td>
                         </tr>
