@@ -8,7 +8,7 @@ from flask import Flask, render_template, request, jsonify, send_file, json
 from werkzeug.utils import secure_filename
 
 from co_occurrence_algorithm.co_occurrence import CoOccurrence
-from pubmed_searcher import PubmedSearch
+from pubmed_search.pubmed_searcher import PubmedSearch
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'CnzOd54-fbuNu_X3_-PDzQ'
