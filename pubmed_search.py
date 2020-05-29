@@ -129,14 +129,20 @@ class PubmedSearch:
             link = article['Link']
             abstract = article['Abstract'].replace("'", "''")
             authors = article['Authors'].replace("'", "''")
-            cursor.execute(
-                "insert into articles(pubmed_id, title, publication_year, "
-                "keywords, article_link, abstract, authors) values ('{}',"
-                "'{}','{}','{}','{}','{}','{}')".format(pmid,
-                                                        title, pub_year,
-                                                        keywords, link,
-                                                        abstract,
-                                                        authors))
+            try:
+                cursor.execute(
+                    "insert into articles(pubmed_id, title, publication_year, "
+                    "keywords, article_link, abstract, authors) values ('{}',"
+                    "'{}','{}','{}','{}','{}','{}')".format(pmid,
+                                                            title, pub_year,
+                                                            keywords, link,
+                                                            abstract,
+                                                            authors))
+                cursor.commit()
+            except mysql.connector.errors.IntegrityError:
+            # entry already in database
+                pass
+
             connection.commit()
         connection.close()
 
