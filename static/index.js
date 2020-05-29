@@ -11,8 +11,16 @@ $(document).ready(function () {
         const options = $('#multiple_select option:selected').toArray().map(item => item.text);
         const jobTitle = $('#job-title').val();
         const sendMail = $('#notify').is(":checked");
-        const data = {options: options, jobTitle: jobTitle, sendMail: sendMail};
-        console.log(data)
+        const data = {
+            options: options,
+            jobTitle: jobTitle,
+            sendMail: sendMail,
+            email: email,
+            ids: ids,
+            term: term,
+            results: results,
+        };
+        console.log(data);
         $.ajax({
             type: 'POST',
             dataType: 'json',
