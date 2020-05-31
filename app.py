@@ -2,6 +2,7 @@ import os
 import random
 import string
 import threading
+import time
 
 import mysql.connector
 from flask import Flask, render_template, request, jsonify, send_file, json
@@ -101,6 +102,11 @@ def render_results(result_id):
 @app.route('/results/<result_id>', methods=['POST'])
 def do_algorithm(result_id):
     global articles
+
+    # wait until thread is ready inserting articles into database
+    while not articles:
+        time.sleep(2)
+
     # if result_id alreay taken, generate a new one
     while result_id in result_ids:
         result_id = f'''_{"".join(random.choice(
@@ -128,7 +134,7 @@ def do_algorithm(result_id):
     co_occurrence.calculate_co_occurrence()
     co_occurr = co_occurrence.get_co_occurence()
     co_occurrence.save_to_db()
-    return json.dumps({'status': 'OK', 'url': url, 'data': co_occurr})
+    return json.dumps({'status': 'OK', 'url': url})
 
 
 def allowed_file(filename):
