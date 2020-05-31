@@ -13,150 +13,219 @@
 </head>
 
 <body>
-    <div class="center aligned stackable ui page grid">
-        <div class="sixteen wide one column">
-            <!-- HEADERS -->
-            <!-- Sub top of the page -->
-            <h0 class="ui small header"></h0>
-            <h1 class="ui teal icon header">
-                <i class="search icon"></i>
-                <div class="content">
-                    PubMed Article Searcher
-                    <div class="sub header">
-                        "Keeping gene panels updated since 2020"
-                    </div>
+<div class="center aligned stackable ui page grid">
+    <div class="sixteen wide one column">
+        <!-- HEADERS -->
+        <!-- Sub top of the page -->
+        <h0 class="ui small header"></h0>
+        <h1 class="ui teal icon header">
+            <i class="search icon"></i>
+            <div class="content">
+                PubMed Article Searcher
+                <div class="sub header">
+                    "Keeping gene panels updated since 2020"
                 </div>
-            </h1>
-            <div class="ui divider"></div>
-            <!--<h2 class="ui large header">Search Tool</h2>-->
-            <!--<div class="ui divider"></div>-->
-        </div>
-
-        <!-- User submitting form and summary table -->
-        <div class="ui horizontal segments">
-            <!--<div class="ui vertical segments">-->
-                <div class="ui teal segment">
-                <h2 class="ui large teal header">Search Tool</h2>
-                    <br>
-                    <div class="ui form">
-                        <form method="get" action="/">
-                            <!-- Hier alle zooi voor in de form -->
-                            <!-- Fields links van de UI grid form -->
-                            <div class="field"><label>Phenotype descriptors</label>
-                                <div class="ui left icon input"><input type="text"
-                                                                       placeholder="Your descriptors here"
-                                                                       name="pheno_input"><i
-                                        class="search icon"></i>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <label>Article date limit</label>
-                                <div class="ui calendar" id="rangestart">
-                                    <div class="ui input left icon">
-                                        <i class="calendar icon"></i>
-                                        <input type="text" placeholder="Fill earliest date to search from" name="calendar_input">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="ui field">
-                            </div>
-                            <div class="inline field">
-                                <label>Enter Gene Symbols</label>
-                                <div class="field">
-                                    <textarea rows="3" name="symbols_input"></textarea>
-                                </div>
-                            </div>
-                            <!-- Fluid dropdown -->
-                            <div class="inline field">
-                                <label>Select algorithm focus</label>
-                                <select multiple=""
-                                        class="label ui selection fluid  dropdown"
-                                        name="focus_input">
-                                    <option value="Abstract">Abstract</option>
-                                    <option value="Full Text">Full Text</option>
-                                    <option value="Title">Title</option>
-                                    <option value="Introduction">Introduction</option>
-                                    <option value="Methods">Methods</option>
-                                    <option value="Results">Results</option>
-                                    <option value="Discussion">Discussion</option>
-                                    <option value="Conclusion">Conclusion</option>
-                                </select>
-                                <script>
-                                    $('.label.ui.dropdown').dropdown();
-                                </script>
-                            </div>
-                            <br>
-                            <div>
-                                <div class="ui checked checkbox">
-                                    <input type="checkbox" checked="">
-                                    <label>Notify me by e-mail when my results are ready!</label>
-                                    <br>
-                                </div>
-                                <div class="field"><label>E-mail:</label>
-                                    <div class="ui left icon input"><input type="text" placeholder="Email" name="input_mail"><i
-                                            class="mail icon"></i>
-                                    </div>
-                                </div>
-                                <div class="field"><label>Job Title:</label>
-                                    <div class="ui left icon input"><input type="text" placeholder="Job title"><i
-                                            class="clipboard icon"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <br>
-
-                            <input type="submit" class="ui teal submit button" value="Submit search" name="submit_button">
-                            <br><br>
-                            <div class="ui teal upload button">Upload data</div>
-                        </form>
-                    </div>
-                </div>
-            <!-- Summary Tabel -->
-            <div class="ui teal segment">
-                <h3 class="ui large teal header">Search results summary</h3>
-                <br>
-{#                {% if articles %}#}
-                <table class="ui sortable large celled table ">
-                    <thead>
-                        <tr>
-                            <th> Query</th>
-                            <th> Symbols Searched</th>
-                            <th> # of articles found</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <!-- Dit moet nog aangepast worden naar dynamisch in te vullen data vanuit de zoekopdracht -->
-                    {% for item in articles %}
-                        {% for thing in item %}
-                            <tr>
-                                <td data-label="Query">{{ thing["zoekwoord"] }}</td>
-                                <td data-label="Symbols">{{ thing["gezochte_symbolen"] }}</td>
-                                <td data-label="# of articles found"><a target="_blank"
-                                        href="{{ thing["link"] }}">{{ thing["aantal_hits"] }}
-                                </a>
-                                </td>
-                            </tr>
-
-                        {% endfor %}
-                    {% endfor %}
-
-                    </tbody>
-                </table>
-                {#                {% endif %}#}
-                <!-- Dit werkt dus nog niet, kon de juiste function call niet vinden -->
-                <script>
-                    $('.table.ui.sortable').tablesort();
-                </script>
             </div>
+        </h1>
+        <div class="ui divider"></div>
+        <!--<h2 class="ui large header">Search Tool</h2>-->
+        <!--<div class="ui divider"></div>-->
+    </div>
 
+    <!-- User submitting form and summary table -->
+    <div class="ui horizontal segments">
+        <!--<div class="ui vertical segments">-->
+        <div class="ui teal segment">
+            <h2 class="ui large teal header">Search Tool</h2>
+            <p><i>Fill in the parameters below as completely as possible <br> for an accurate search in the PubMed
+                articles database. </i></p>
+
+            <div class="ui form">
+                <form method="get" action="/">
+                    <!-- Hier alle zooi voor in de form -->
+                    <!-- Fields links van de UI grid form -->
+                    <div class="field">
+                        <div class="ui accordion">
+                            <div class="title">
+                                <i class="dropdown icon"></i>
+                                Phenotype descriptors
+                            </div>
+                            <div class="content">
+                                <div class="ui section">
+                                    <p>Please enter your phenotype descriptors here. <br>
+                                        These are used in the algorithm to search for <br> articles containing these
+                                        descriptors.</p>
+                                </div>
+                            </div>
+
+
+                            <div class="ui left icon input"><input type="text"
+                                                                   placeholder="Your descriptors here"
+                                                                   name="pheno_input"><i
+                                    class="search icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="field">
+                            <div class="ui accordion">
+                                <div class="title">
+                                    <i class="dropdown icon"></i>
+                                    Article date limit
+                                </div>
+                                <div class="content">
+                                    <div class="ui section">
+                                        <p>This date limits the algorithm to search for <br>
+                                            articles only published between the entered <br>
+                                            date and present day. The date is dependant <br>
+                                            on the first publication date (?). <br><br>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui calendar" id="rangestart">
+                                <div class="ui input left icon">
+                                    <i class="calendar icon"></i>
+                                    <input type="text" placeholder="Fill earliest date to search from"
+                                           name="calendar_input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inline field">
+                        <div class="ui accordion">
+                            <div class="title">
+                                <i class="dropdown icon"></i>
+                                Gene symbols
+                            </div>
+                            <div class="content">
+                                <div class="ui section">
+                                    <p>Enter here the gene symbols desired to be <br>
+                                        searched for by the algorithm. Something <br> something genpanels.
+                                        <br>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <textarea rows="3" name="symbols_input"></textarea>
+                        </div>
+                    </div>
+                    <!-- Fluid dropdown -->
+                    <div class="inline field">
+                        <div class="ui accordion">
+                            <div class="title">
+                                <i class="dropdown icon"></i>
+                                Select algorithm focus
+                            </div>
+                            <div class="content">
+                                <div class="ui section">
+                                    <p>Selecting one or several of the options below will <br>
+                                        urge the tool to look for deeper purpose in the <br>
+                                        selected article sections.
+ <br>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <select multiple=""
+                                class="label ui selection fluid  dropdown"
+                                name="focus_input">
+                            <option value="Abstract">Abstract</option>
+                            <option value="Full Text">Full Text</option>
+                            <option value="Title">Title</option>
+                            <option value="Introduction">Introduction</option>
+                            <option value="Methods">Methods</option>
+                            <option value="Results">Results</option>
+                            <option value="Discussion">Discussion</option>
+                            <option value="Conclusion">Conclusion</option>
+                        </select>
+                        <script>
+                            $('.label.ui.dropdown').dropdown();
+                        </script>
+                    </div>
+                    <br>
+                    <div>
+                        <div class="ui checkbox">
+                            <input type="checkbox" checked="">
+                            <label>Notify me by e-mail when my results are ready!</label>
+                            <br>
+                        </div>
+                        <div class="field"><label>E-mail:</label>
+                            <div class="ui left icon input"><input type="text" placeholder="Email" name="input_mail"><i
+                                    class="mail icon"></i>
+                            </div>
+                        </div>
+                        <div class="field"><label>Job Title:</label>
+                            <div class="ui left icon input"><input type="text" placeholder="Job title"><i
+                                    class="clipboard icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+
+                    <input type="submit" class="ui teal submit button" value="Submit search" name="submit_button">
+                     <a title="Button to start the search. Make sure all parameters are filled in correctly"><span><i class="teal question circle icon"></i></span>
+            </a>
+                    <br><br>
+                    <div class="ui teal upload button">Upload data</div>
+                     <a title="Button to upload last search to the genpanels database"><span><i class="teal question circle icon"></i></span>
+            </a>
+                </form>
+            </div>
         </div>
-        <!-- Big results table -->
-        <div class="sixteen wide one column">
+        <!-- Summary Tabel -->
+        <div class="ui teal segment">
+            <h3 class="ui large teal header">Search results summary</h3>
+            <p><i>This section shows the most recent search data, and allows the <br> user to download this data.</i>
+            </p>
+            <br>
+            <div class="ui teal download button">Download</div>
+            <a title="Click here to download all data"><span><i class="teal question circle icon"></i></span>
+            </a>
+            <br>
+            <table class="ui sortable large celled table ">
+                <thead>
+                <tr>
+                    <th> Query</th>
+                    <th> Symbols Searched</th>
+                    <th> # of articles found</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Dit moet nog aangepast worden naar dynamisch in te vullen data vanuit de zoekopdracht -->
+                {% for item in articles %}
+                    {% for thing in item %}
+                        <tr>
+                            <td data-label="Query">{{ thing["zoekwoord"] }}</td>
+                            <td data-label="Symbols">{{ thing["gezochte_symbolen"] }}</td>
+                            <td data-label="# of articles found"><a target="_blank"
+                                                                    href="{{ thing["link"] }}">{{ thing["aantal_hits"] }}
+                            </a>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                {% endfor %}
+
+                </tbody>
+            </table>
+            {#                {% endif %}#}
+            <!-- Dit werkt dus nog niet, kon de juiste function call niet vinden -->
+            <script>
+                $('.table.ui.sortable').tablesort();
+            </script>
+        </div>
+
+    </div>
+    <!-- Big results table -->
+    <div class="sixteen wide one column">
 
         <div class="ui divider">
             <br><br>
             <div class="left aligned ui segment">
                 <h4 class="ui large teal header">Full Search Results</h4>
+                <p><i>This section shows the full results relevant to the latest search query</i></p>
                 <table class="ui celled table">
                     <thread>
                         <tr>
@@ -180,11 +249,19 @@
             </div>
             <br><br><br><br>
         </div>
-        </div>
     </div>
-    </div>
+</div>
+</div>
 </body>
 
+
+<script language='javascript'>
+    $(document).ready(function () {
+        $('.ui.accordion').accordion({
+            collapsible: true, active: false, clearStyle: true
+        });
+
+    });
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>
-</body>
 </html>

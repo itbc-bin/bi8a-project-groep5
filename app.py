@@ -21,6 +21,11 @@ test_data = [
 
 @app.route('/')
 def home_page():
+    return render_template('homepage.html')
+
+
+@app.route('/tool')
+def tool_page():
     # print(request.args.get("pheno_input"))
     # print(request.args.get("symbols_input"))
     # print("zo dus: ", request.args.get("calendar_input"))

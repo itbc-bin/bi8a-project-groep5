@@ -2,6 +2,8 @@ const tableHeaders = document.querySelectorAll(".content-table th")
 
 $('.label.ui.dropdown').dropdown();
 
+$('.ui.accordion').accordion('behavior', );
+
 $('.trigger.example .accordion')
   .accordion({
     selector: {
@@ -11,9 +13,13 @@ $('.trigger.example .accordion')
 ;
 
 $(function () {
+
+})
+
+
+$(function () {
     $('#rangestart').calendar({type: 'date'});
 });
-
 
 // Sortable table (Van 28 tot 161)
 
