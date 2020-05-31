@@ -47,6 +47,8 @@ class PubmedSearch:
         Entrez.api_key = self.api_key
         for gene_symbol in self.gene_symbols.split('\n'):
             gene_symbol = gene_symbol.strip()
+            if gene_symbol == "":
+                break
             gene_symbols = self.get_symbols_from_database(gene_symbol)
             all_aliases = gene_symbols.split(',')
             if len(all_aliases) == 1:
@@ -64,7 +66,7 @@ class PubmedSearch:
                            f'"3000"[Date - Publication])'
             term_handle = Entrez.esearch(db='pubmed',
                                          sort='relevance',
-                                         retmax='50',
+                                         retmax='5000',
                                          retmode='xml',
                                          term=search_term)
 
