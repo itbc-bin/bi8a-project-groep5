@@ -106,7 +106,6 @@ def do_algorithm(result_id):
     # wait until thread is ready inserting articles into database
     while not articles:
         time.sleep(2)
-
     # if result_id alreay taken, generate a new one
     while result_id in result_ids:
         result_id = f'''_{"".join(random.choice(
