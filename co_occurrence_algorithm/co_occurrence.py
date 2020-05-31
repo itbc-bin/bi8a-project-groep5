@@ -1,35 +1,54 @@
 import itertools
 import os
 import re
+import time
 
 import mysql.connector
+import nltk
 from nltk.tokenize import sent_tokenize
+
+NLTK_DIR = os.path.join(os.getcwd(), 'nltk_data')
+nltk.data.path.append(NLTK_DIR)
+
+"""
+Class to perform the co occurrence algorithm.
+@author: Yaris
+"""
 
 
 class CoOccurrence:
     """
-    A class to calculate the co-occurrence of titles and abstracts of articles.
-    It creates combinations of gene symbols and phentopyes which will be
-    used to search for new relationsips in articles. It takes about 7 minutes
-    to calculate all of the possible (41709140) combinations.
-    :param data: a list that contains dictionary with the info of an article.
-    :param url_id: the url id of the search term.
-    :param term: the search term (phenotype) from the user input.
-    :param title: an optional title of the algorithm search, from user input.
-    :param in_title: boolean whether or not to include the title for the
-    calculation. Default is true.
-    :param in_sentence: boolean whether or not to inculde a sentence of the
-    abstract for the calculation. Default is true.
-    :param in_abstract: boolean whether or not to inculde the abstract for
-    the calculation. Default is true.
-    :param in_multiple_abstracts: boolean whether or not to inculde if a
-    combination occurs in multiple abstracts for the calculation. Default is
-    true.
+    Class to perform the co occurrence algorithm. The algorithm will search
+    combinations in all of the articles which were found with the PubMed
+    search. The algorithm generates combninations of the phenotype (from user
+    input) and 4409 different gene symbols from the GenPanels file. The
+    combinations are scored on different aspects. If the combination occurs in
+    a title, that combination will get 10 points, if the combination occurs in
+    a single sentence of the abstract, the combination will get 5 points. If
+    the combination occurs in the abstract, the combination will get 2 points.
+    Lastly, if the combination occurs in multiple abstracts, the combination
+    will get 1 point.
     """
 
     def __init__(self, data, url_id, term, title=None, in_title=True,
                  in_sentence=True, in_abstract=True,
                  in_multiple_abstracts=True):
+        """
+        Initialization method of the co occurrence class.
+        :param data: The data containing the articles.
+        :param url_id: The id of the url.
+        :param term: The search term from user input.
+        :param title: The title for the search from user input.
+        :param in_title: Boolean whether or not to include the title for the
+        calculation. Default is true.
+        :param in_sentence: Boolean whether or not to inculde a sentence of the
+        abstract for the calculation. Default is true.
+        :param in_abstract: Boolean whether or not to inculde the abstract for
+        the calculation. Default is true.
+        :param in_multiple_abstracts: Boolean whether or not to inculde if a
+        combination occurs in multiple abstracts for the calculation. Default is
+        true.
+        """
         self.__directory = os.path.join('co_occurrence_algorithm',
                                         'data_files')
         self.data_list = data
@@ -48,6 +67,7 @@ class CoOccurrence:
                          'multiple times in abstract': in_multiple_abstracts}]
         self.tokenized = []
         self.co_occurrence = {}
+        self.__download_punkt()
         self.__get_combinations()
 
     def pre_process_data(self):
@@ -130,7 +150,6 @@ class CoOccurrence:
         Save co occurrence results to a database, so the results can always
         be retrieved.
         """
-        print(self.co_occurrence)
         connection = self.__connection_database()
         cursor = connection.cursor()
         cursor.execute("select count(*) from algorithm_results")
@@ -234,7 +253,8 @@ class CoOccurrence:
 
     @staticmethod
     def __connection_database():
-        """Make connection to the database
+        """
+        Make connection to the database
         :return: The connection
         """
         connection = mysql.connector.connect(
@@ -244,3 +264,15 @@ class CoOccurrence:
             password='blaat1234')
 
         return connection
+
+    @staticmethod
+    def __download_punkt():
+        """
+        Download the punkt directory from nltk if it has not been installed
+        yet.
+        """
+        nltk_dir = os.path.join(os.getcwd(), 'nltk_data')
+
+        if not os.path.isdir(nltk_dir):
+            nltk.download('punkt', download_dir=nltk_dir)
+            time.sleep(15)
