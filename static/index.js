@@ -2,7 +2,7 @@ $(document).ready(function () {
     // dropdown functionality
     $('.label.ui.dropdown').dropdown();
 
-    $('.ui.accordion').accordion('behavior', );
+    $('.ui.accordion').accordion();
 
 $('.trigger.example .accordion')
   .accordion({
