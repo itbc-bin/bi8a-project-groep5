@@ -20,7 +20,7 @@ $(document).ready(function () {
             term: term,
             results: results,
         };
-        console.log(data);
+        $('.test-button').attr('disabled', true);
         $.ajax({
             type: 'POST',
             dataType: 'json',
@@ -29,11 +29,14 @@ $(document).ready(function () {
             async: true,
             success: [function (response) {
                 $(".extra-link").remove();
+                $('.test-button').attr('disabled', false);
                 $(".form").append(`<p class="extra-link">URL: <a href="${response.url}" target="_blank">Results</a></p>`);
             }],
             error: function (response) {
-                $(".form").append(`<p>something went wrong 😞</p>`)
-                console.error(response)
+                $(".extra-link").remove();
+                $('.test-button').attr('disabled', false);
+                $(".form").append(`<p>something went wrong 😞</p>`);
+                console.error(response);
             }
         })
     });
@@ -243,3 +246,4 @@ $(function () {
 //     table.querySelector(`th:nth-child(${column + 1})`).classList.toggle("th-sort-asc", asc);
 //     table.querySelector(`th:nth-child(${column + 1})`).classList.toggle("th-sort-desc", !asc);
 // }
+
