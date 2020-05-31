@@ -3,3 +3,4 @@ virtualenv/
 __pycache__/
 venv/
 env/
+nltk_data/
