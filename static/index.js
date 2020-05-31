@@ -2,6 +2,17 @@ $(document).ready(function () {
     // dropdown functionality
     $('.label.ui.dropdown').dropdown();
 
+    $('.ui.accordion').accordion('behavior', );
+
+$('.trigger.example .accordion')
+  .accordion({
+    selector: {
+      trigger: '.title .icon'
+    }
+  })
+;
+
+
     // table sortable
     $('.table.ui.sortable').tablesort();
 
