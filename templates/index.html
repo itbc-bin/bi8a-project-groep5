@@ -20,6 +20,7 @@
 </head>
 
 <body>
+
 <div class="center aligned stackable ui page grid">
     <div class="sixteen wide one column">
         <!-- HEADERS -->
@@ -320,7 +321,8 @@
                         Download data
                     </button>
                 </a>
-                <a title="Button to start the search. Make sure all parameters are filled in correctly"><span><i class="teal question circle icon"></i></span></a>
+                <a title="Button to start the search. Make sure all parameters are filled in correctly"><span><i
+                        class="teal question circle icon"></i></span></a>
             {% endif %}
             <br>
             <table class="ui sortable large celled table ">
@@ -350,39 +352,62 @@
             </table>
         </div>
     </div>
+    </body>
 
+
+
+
+    <body>
     <!-- Big results table -->
-    <div class="sixteen wide one column">
-        <div class="ui divider">
-            <br><br>
-            <div class="left aligned ui segment">
-                <h4 class="ui large teal header">Full Search Results</h4>
-{#                Moet nog even uitzoeken hoe ik dit netter maak zodat het niet zo schreeuwend op de website staat. #}
-                <p><i>This section shows the full results relevant to the latest search query  (Dit is WIP)</i></p>
-                <table class="ui celled table">
-                    <thead>
-                    <tr>
-                        <th> Query</th>
-                        <th> Gene Symbol</th>
-                        <th> Keywords</th>
-                        <th> Article Title</th>
-                        <th> Publication Date</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td data-label="Query">FOX2P</td>
-                        <td data-label="Gene Symbols">Some Symbol</td>
-                        <td data-label="Keywords">4</td>
-                        <td data-label="Article Title">Insert a title</td>
-                        <td data-label="Publication Date">19-4-2014</td>
-                    </tr>
-                    </tbody>
-                </table>
+    <div class="container">
+        <div class="sixteen wide one column">
+            <div class="ui divider">
+                <br><br>
+                <div class="left aligned ui segment">
+                  <button class="ui teal upload button" id="ResultsPageButton"><a href="//results/<result_id>"                                     target="_blank"
+></a>
+                        Go to Results
+                    </button>
+                </a>
+                <a title="This button will bring you to another page with more specific results"><span><i
+                        class="teal question circle icon"></i></span></a>
+
+                    <h4 class="ui large teal header">Full Search Results</h4>
+                    {#                Moet nog even uitzoeken hoe ik dit netter maak zodat het niet zo schreeuwend op de website staat. #}
+                    <p><i>This section shows the full results relevant to the latest search query (Dit is WIP)</i></p>
+                    <table class="ui celled table">
+                        <thead>
+                        <tr>
+                            <th> Query</th>
+                            <th> Gene Symbol</th>
+                            <th> Keywords</th>
+                            <th> Article Title</th>
+                            <th> Publication Date</th>
+                            <th> PubMed ID</th>
+                        </tr>
+                        </thead>
+                        {% if results %}
+                            <tbody>
+                            {% for article in articles %}
+                                <tr>
+                                    <td data-label="Query">{{ article[2] }}</td>
+                                    <td data-label="Gene Symbols">{{ result["searched_gene_symbols"] }}</td>
+                                    <td data-label="Keywords">{{ article }}</td>
+                                    <td data-label="Article Title">Insert a title</td>
+                                    <td data-label="Publication Date">19-4-2014</td>
+                                    <td data-label="PubMed ID">{{ article[1] }}</td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        {% endif %}
+                    </table>
+                </div>
+                <br><br><br><br>
             </div>
-            <br><br><br><br>
         </div>
     </div>
+
 {% endif %}
 </body>
 

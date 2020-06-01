@@ -91,6 +91,7 @@ def upldfile():
 
 @app.route('/results/<result_id>', methods=['GET'])
 def render_results(result_id):
+    print("naar de resultaten pagina")
     result_list, title = get_algorithm_results(result_id)
     if result_list:
         return render_template('results.html', title=title,
@@ -195,6 +196,7 @@ def get_results(ids):
             results_list.append(result)
     connction.close()
     return results_list
+
 
 
 def connection_database():

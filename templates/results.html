@@ -3,10 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Results for {{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>
+    <script defer src="{{ url_for('static', filename='index.js') }}"></script>
+    <script src="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.js"></script>
 </head>
 <body>
-{% for result in result_list %}
-    <div>Combination: {{ result['combination'] }}, Score: {{ result['amount'] }}, met PubMed ID: {{ result['PMID'] }}</div>
-{% endfor %}
+<h11>dit is de resultaten webpage</h11>
+
+{#{% for result in result_list %}#}
+{#    <div>Combination: {{ result['combination'] }}, Score: {{ result['amount'] }}, met PubMed ID: {{ result['PMID'] }}</div>#}
+{#{% endfor %}#}
 </body>
 </html>
