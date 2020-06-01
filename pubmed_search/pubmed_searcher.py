@@ -1,61 +1,109 @@
 import warnings
-import os
+from datetime import datetime
 
 import mysql.connector
 from Bio import Entrez
 
 warnings.filterwarnings('ignore', message='Numerical issues were encountered')
 
+"""
+Class to perform a search in the pubmed database.
+@author: Christiaan and Yaris
+"""
+
 
 class PubmedSearch:
 
-    def __init__(self, e_mail, search_word, gene_symbols, year=2000):
+    def __init__(self, e_mail, search_word, gene_symbols,
+                 date='January 1, 2010'):
+        """
+        Initialization method of the pubmed search.
+        :param e_mail: The users email, which will be used for the Entrez
+        search.
+        :param search_word: The phenotype from user input.
+        :param gene_symbols: The gene symbols from user input.
+        :param date: The date from user input. (default is 2010/01/01).
+        """
         self.email = e_mail
-        self.search_word = search_word
+        self.api_key = '70603012ca2859e88695f0dae2d6dc988308'
+        self.search_word = search_word.strip()
         self.gene_symbols = gene_symbols
-        self.year = year
+        self.date = datetime.strptime(date, '%B %d, %Y').strftime('%Y/%m/%d')
+        self.ids_data = []
         self.articles_data = []
         self.articles = []
         self.results = []
 
     def search_pubmed(self):
+        """
+        Search the pudmed database for every gene symbol from user input.
+        Every search consists of a phenotype, the gene symbol (and its aliases
+        from our database) and a from date from user input. Save a dictionary
+        with the search_term, used gene symbols amount of hits and the link
+        and append to a list. Also save all the pmids of the articles to a
+        new list which will be used later.
+        """
         Entrez.email = self.email
-        for gene_symbol in self.gene_symbols.split(os.linesep):
+        Entrez.api_key = self.api_key
+        for gene_symbol in self.gene_symbols.split('\n'):
+            gene_symbol = gene_symbol.strip()
+            if gene_symbol == "":
+                break
             gene_symbols = self.get_symbols_from_database(gene_symbol)
             all_aliases = gene_symbols.split(',')
-            search_term = f'{self.search_word} AND ({gene_symbol}'
-            for counter, symbol in enumerate(all_aliases):
-                if counter == 0:
-                    continue
-                if counter == len(all_aliases) - 1:
-                    search_term += f' OR {symbol.strip()})'
-                    break
-                search_term += f' OR {symbol.strip()}'
-            search_term += f' AND ("{self.year}"[Date - Publication] : ' \
+            if len(all_aliases) == 1:
+                search_term = f'{self.search_word} AND {gene_symbol}'
+            else:
+                search_term = f'{self.search_word} AND ({gene_symbol}'
+                for counter, symbol in enumerate(all_aliases):
+                    if counter == 0:
+                        continue
+                    if counter == len(all_aliases) - 1:
+                        search_term += f' OR {symbol.strip()})'
+                        break
+                    search_term += f' OR {symbol.strip()}'
+            search_term += f' AND ("{self.date}"[Date - Publication] : ' \
                            f'"3000"[Date - Publication])'
             term_handle = Entrez.esearch(db='pubmed',
                                          sort='relevance',
-                                         retmax='10000',
+                                         retmax='5000',
                                          retmode='xml',
                                          term=search_term)
 
             ids = Entrez.read(term_handle)['IdList']
             amount_ids = len(ids)
-            search_link = search_term.replace(' ', '+') \
-                .replace('(', '%28').replace(')', '%29')
-            link_page = f'https://pubmed.ncbi.nlm.nih.gov/?term={search_link}'
-            self.articles_data.append(
-                {'zoekwoord': gene_symbol, 'gezochte_symbolen': gene_symbols,
-                 'aantal_hits': amount_ids, 'link': link_page})
-            if ids:
+            link = search_term.replace(' ', '+').replace('(', '%28').replace(
+                ')', '%29').replace('"', '%22').replace('[', '%5B').replace(
+                ']', '%5D')
+            url = f'https://pubmed.ncbi.nlm.nih.gov/?term={link}'
+            self.results.append(
+                {'search_word': gene_symbol.strip(),
+                 'searched_gene_symbols': gene_symbols,
+                 'amount_hits': amount_ids, 'link': url})
+
+            self.ids_data.append({'ids': ids, 'gene_symbol': gene_symbol})
+
+    def __parse_ids(self):
+        """
+        Search the pubmed database with the pubmed ids. Create a dictionary
+        with the gene symbol and all of the articles. Append to list.
+        :return:
+        """
+        for data in self.ids_data:
+            if data['ids']:
                 id_handle = Entrez.efetch(db='pubmed',
                                           retmode='xml',
-                                          id=ids)
+                                          id=data['ids'])
                 articles = Entrez.read(id_handle)['PubmedArticle']
-                self.articles.append({gene_symbol: articles})
+                self.articles_data.append({data['gene_symbol']: articles})
 
     def parse_results(self):
-        for articles in self.articles:
+        """
+        Parse the articles and save it to our database, so it can be used
+        later for the co-occurrence algorithm.
+        """
+        self.__parse_ids()
+        for articles in self.articles_data:
             for symbol, article in articles.items():
                 for article_info in article:
                     try:
@@ -112,18 +160,25 @@ class PubmedSearch:
                             'PMID': article_pmid,
                             'Link': article_link
                         }
-                        self.results.append(results_dict)
+                        self.articles.append(results_dict)
 
                     except KeyError:
                         pass
 
-    def get_results(self):
-        return self.results
+    def get_articles(self):
+        """
+        Returns the articles.
+        :return: Articles.
+        """
+        return self.articles
 
     def insert_to_database(self):
+        """
+        Insert the articles into the database.
+        """
         connection = self.connection_database()
         cursor = connection.cursor()
-        for article in self.results:
+        for article in self.articles:
             pmid = int(article['PMID'])
             title = article['Title'].replace("'", "''")
             pub_year = int(article['Publication_year'])
@@ -131,15 +186,18 @@ class PubmedSearch:
             link = article['Link']
             abstract = article['Abstract'].replace("'", "''")
             authors = article['Authors'].replace("'", "''")
-            cursor.execute(
-                "insert into articles(pubmed_id, title, publication_year, "
-                "keywords, article_link, abstract, authors) values ('{}',"
-                "'{}','{}','{}','{}','{}','{}')".format(pmid,
-                                                        title, pub_year,
-                                                        keywords, link,
-                                                        abstract,
-                                                        authors))
-            connection.commit()
+            try:
+                cursor.execute(
+                    "insert into articles(pubmed_id, title, publication_year, "
+                    "keywords, article_link, abstract, authors) values ('{}',"
+                    "'{}','{}','{}','{}','{}','{}')".format(pmid,
+                                                            title, pub_year,
+                                                            keywords, link,
+                                                            abstract,
+                                                            authors))
+                connection.commit()
+            except mysql.connector.errors.IntegrityError:
+                pass
         connection.close()
 
     @staticmethod
@@ -157,8 +215,15 @@ class PubmedSearch:
 
     @staticmethod
     def get_symbols_from_database(gene_symbol):
+        """
+        Get the aliases and previous gene symbols of a gene symbol from the
+        database.
+        :param gene_symbol: the gene symbol which aliases and previous symbols
+        should be returnd.
+        :return: A comma seperated string containing the aliases and previous
+        symbols.
+        """
         gene_symbol = gene_symbol.strip()
-        print("gene symbols: ", gene_symbol)
         connection = PubmedSearch.connection_database()
         cursor = connection.cursor()
         cursor.execute("select gene_symbol, previous_gene_symbols, "
@@ -166,15 +231,6 @@ class PubmedSearch:
                        " = '{}';".format(gene_symbol))
         results = cursor.fetchall()
         connection.close()
-        return ', '.join(results[0])
-
-
-if __name__ == '__main__':
-    term = 'intellectual disability'
-    words = 'PRRT2\nKCNMA1'
-    email = 'christiaanposthuma@gmail.com'
-    search = PubmedSearch(e_mail=email, search_word=term, gene_symbols=words,
-                          year=2015)
-    search.search_pubmed()
-    search.parse_results()
-    search.insert_to_database()
+        if results:
+            return ', '.join(filter(None, results[0]))
+        return gene_symbol

@@ -1,5 +1,6 @@
-/virtualenv/
-/.idea/
-/__pycache__/
-/venv/
-/env/
+virtualenv/
+.idea/
+__pycache__/
+venv/
+env/
+nltk_data/
