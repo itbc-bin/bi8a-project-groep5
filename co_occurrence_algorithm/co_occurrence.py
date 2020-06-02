@@ -242,13 +242,11 @@ class CoOccurrence:
         Then all of the possible combinations will be generated and saved to
         a new list.
         """
-        genes = []
-        with open(self.gene_symbols, 'r') as genes_file:
-            genes_file.readline()
-            for line in genes_file:
-                gene = line.split('\t')[0]
-                genes.append(gene.strip())
-
+        connection = self.__connection_database()
+        cursor = connection.cursor()
+        cursor.execute("select gene_symbol from gene_symbols")
+        gene_symbols = cursor.fetchall()
+        genes = [gene_symbol[0].strip() for gene_symbol in gene_symbols]
         self.combinations = list(itertools.product(genes, self.phenotype))
 
     @staticmethod
