@@ -17,7 +17,8 @@ $('.trigger.example .accordion')
     $('.table.ui.sortable').tablesort();
 
     // request for co occurrence algorithm
-    $(".test-button").on("click", () => {
+    $(".algorithm-button").on("click", () => {
+        $(".extra-link").remove();
         const id = '_' + Math.random().toString(36).substr(2, 9);
         const options = $('#multiple_select option:selected').toArray().map(item => item.text);
         const jobTitle = $('#job-title').val();
@@ -31,7 +32,7 @@ $('.trigger.example .accordion')
             term: term,
             results: results,
         };
-        $('.test-button').attr('disabled', true);
+        $('.algorithm-button').attr('disabled', true);
         $.ajax({
             type: 'POST',
             dataType: 'json',
@@ -40,12 +41,12 @@ $('.trigger.example .accordion')
             async: true,
             success: [function (response) {
                 $(".extra-link").remove();
-                $('.test-button').attr('disabled', false);
+                $('.algorithm-button').attr('disabled', false);
                 $(".form").append(`<p class="extra-link">URL: <a href="${response.url}" target="_blank">Results</a></p>`);
             }],
             error: function (response) {
                 $(".extra-link").remove();
-                $('.test-button').attr('disabled', false);
+                $('.algorithm-button').attr('disabled', false);
                 $(".form").append(`<p>something went wrong 😞</p>`);
                 console.error(response);
             }
