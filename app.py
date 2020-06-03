@@ -109,12 +109,17 @@ def upload_file():
             return jsonify(filename='wrong extension')
 
 
+@app.route('/results')
+def results():
+    return render_template('results.html')
+
+
 @app.route('/results/<result_id>', methods=['GET'])
-def render_results(result_id):
+def individual_result(result_id):
     print("naar de resultaten pagina")
     result_list, title = get_algorithm_results(result_id)
     if result_list:
-        return render_template('results.html', title=title,
+        return render_template('individual_result.html', title=title,
                                result_list=result_list)
     else:
         return render_template('error_pages/404.html'), 404
