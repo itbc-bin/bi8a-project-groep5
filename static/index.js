@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
     // dropdown functionality
     $('.label.ui.dropdown').dropdown();
 
@@ -17,38 +18,44 @@ $(document).ready(function () {
 
     // request for co occurrence algorithm
     $(".algorithm-button").on("click", () => {
-        $(".view-results").css("display", "none");
-        const id = '_' + Math.random().toString(36).substr(2, 9);
-        const options = $('#multiple_select option:selected').toArray().map(item => item.text);
-        const jobTitle = $('#job-title').val();
-        const sendMail = $('#notify').is(":checked");
-        const data = {
-            options: options,
-            jobTitle: jobTitle,
-            sendMail: sendMail,
-            ids: ids,
-            term: term,
-            results: results,
-        };
-        $('.algorithm-button').attr('disabled', true);
-        $.ajax({
-            type: 'POST',
-            dataType: 'json',
-            data: {data: JSON.stringify(data)},
-            url: `/results/${id}`,
-            async: true,
-            success: [function (response) {
-                $('.algorithm-button').attr('disabled', false);
-                $(".link-results").attr("href", response.url)
-                $(".view-results").css("display", "inline-block").after("<br>");
-            }],
-            error: function (response) {
-                $('.algorithm-button').attr('disabled', false);
-                $(".form").append(`<p>something went wrong 😞</p>`);
-                $(".view-results").css("display", "inline-block").after("<br>");
+        let title = document.getElementById('job-title').validity.valid;
 
-            }
-        })
+        if (!title) {
+            alert('Please fill out a title')
+        } else {
+            $(".view-results").css("display", "none");
+            const id = '_' + Math.random().toString(36).substr(2, 9);
+            const options = $('#multiple_select option:selected').toArray().map(item => item.text);
+            const jobTitle = $('#job-title').val();
+            const sendMail = $('#notify').is(":checked");
+            const data = {
+                options: options,
+                jobTitle: jobTitle,
+                sendMail: sendMail,
+                ids: ids,
+                term: term,
+                results: results,
+            };
+            $('.algorithm-button').attr('disabled', true);
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                data: {data: JSON.stringify(data)},
+                url: `/results/${id}`,
+                async: true,
+                success: [function (response) {
+                    $('.algorithm-button').attr('disabled', false);
+                    $(".link-results").attr("href", response.url)
+                    $(".view-results").css("display", "inline-block").after("<br>");
+                }],
+                error: function (response) {
+                    $('.algorithm-button').attr('disabled', false);
+                    $(".form").append(`<p>something went wrong 😞</p>`);
+                    $(".view-results").css("display", "inline-block").after("<br>");
+
+                }
+            })
+        }
     });
 });
 
@@ -72,6 +79,7 @@ $(function () {
 	https://github.com/kylefox/jquery-tablesort
 	Version 0.0.11
 */
+
 
 (function ($) {
     $.tablesort = function ($table, settings) {
