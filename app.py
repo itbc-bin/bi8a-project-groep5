@@ -21,9 +21,25 @@ result_ids = []
 articles = []
 
 
+@app.errorhandler(404)
+def error_page_not_found(error):
+    return render_template('error_pages/404.html')
+
+
 @app.route('/')
 def home_page():
-    return render_template('homepage.html')
+    title = "bi8a-Project"
+    return render_template('home.html')
+
+
+@app.route('/about_project')
+def about_project_page():
+    return render_template('about_project.html')
+
+
+@app.route('/about_makers')
+def about_makers_page():
+    return render_template('about_makers.html')
 
 
 @app.route('/tool')
@@ -50,7 +66,7 @@ def tool_page():
         x = threading.Thread(target=parse_results, args=(search,))
         x.daemon = True
         x.start()
-    return render_template('index.html', results=results,
+    return render_template('tool.html', results=results,
                            first_time=first_time, ids_data=ids_data, term=term)
 
 
