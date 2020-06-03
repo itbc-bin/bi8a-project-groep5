@@ -110,8 +110,10 @@ def upload_file():
 
 
 @app.route('/results')
-def results():
-    return render_template('results.html')
+def results_page():
+    url_results = get_all_previous_results()
+    print(url_results)
+    return render_template('results.html', url_results=url_results)
 
 
 @app.route('/results/<result_id>', methods=['GET'])
@@ -221,6 +223,20 @@ def get_results(ids):
             results_list.append(result)
     connction.close()
     return results_list
+
+
+def get_all_previous_results():
+    connection = connection_database()
+    cursor = connection.cursor()
+    cursor.execute("select url_id, title, creation_date from results")
+    url_results = cursor.fetchall()
+    all_urls = [{
+        'url': f'results/{result[0]}',
+        'title': result[1],
+        'date': result[2]
+    } for result in url_results]
+    connection.close()
+    return all_urls
 
 
 def connection_database():
