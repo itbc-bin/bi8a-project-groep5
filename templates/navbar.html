@@ -15,18 +15,18 @@
 </head>
 
 <body>
+<br>
+<div class="center aligned container stackable ui page grid">
 
-<div class="center aligned stackable ui page grid">
     <div class="ui huge attached tabular menu">
+
         <a class="item" href="{{ url_for('home_page') }}">Home</a>
-        {# basic info over de tool met link naar de tool #}
         <a class="item" href="{{ url_for('about_project_page') }}">About the
             project</a>
-        {# info over het genpanels project, hoe genpanels benut worden en hoe onze tool hierin staat #}
         <a class="item" href="{{ url_for('about_makers_page') }}">About the
             makers</a>
-        <a class="item" href="{{ url_for('tool_page') }}">Tool</a>
-        <a class="item" href="{{ url_for('results_page') }}">All previous results</a>
+        <a class="item" href="{{ url_for('results_page') }}">Previous
+            results</a>
     </div>
     {% block error %}
     {% endblock %}
@@ -35,8 +35,6 @@
 {% block content %}
 {% endblock %}
 </body>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>
 </html>
 
 
