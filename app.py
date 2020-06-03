@@ -28,7 +28,6 @@ def error_page_not_found(error):
 
 @app.route('/')
 def home_page():
-    title = "bi8a-Project"
     return render_template('home.html')
 
 
