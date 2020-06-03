@@ -1,25 +1,13 @@
-<!DOCTYPE html>
-<html lang="en" xmlns="">
-<head>
-    <meta charset="UTF-8">
-    <title>Tool page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" type="text/css"
-          href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>
-    <script defer src="{{ url_for('static', filename='index.js') }}"></script>
-    <script src="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.js"></script>
+{% extends 'navbar.html' %}
+{% block title %}Tool Page Gene Panel Application{% endblock %}
+{% block js_variables %}
     <script>
         let results = {{ results | safe }};
         let ids = {{ ids_data | safe }};
         let term = '{{ term | safe }}';
     </script>
-
-</head>
-
-<body>
-
+{% endblock %}
+{% block content %}
 <div class="center aligned stackable ui page grid">
     <div class="sixteen wide one column">
         <!-- HEADERS -->
@@ -365,8 +353,5 @@
         </form>
     </div>
 {% endif %}
-</body>
-
-
-</html>
+{% endblock %}
 
