@@ -5,40 +5,151 @@
         let results = {{ results | safe }};
         let ids = {{ ids_data | safe }};
         let term = '{{ term | safe }}';
+        let symbols =
+        {{ symbols | safe }}
     </script>
 {% endblock %}
 {% block content %}
-<div class="center aligned stackable ui page grid">
-    <div class="sixteen wide one column">
-        <!-- HEADERS -->
-        <!-- Sub top of the page -->
-        <h4 class="ui teal icon header item">
-            <i class="search icon"></i>
-            {#            <div class="content">#}
-            <div class="content">PubMed Article Searcher
-                <div class="sub header">
-                    "Keeping gene panels updated since 2020"
+    <div class="center aligned stackable ui page grid">
+        <div class="sixteen wide one column">
+            <!-- HEADERS -->
+            <!-- Sub top of the page -->
+            <h4 class="ui teal icon header item">
+                <i class="search icon"></i>
+                {#            <div class="content">#}
+                <div class="content">PubMed Article Searcher
+                    <div class="sub header">
+                        "Keeping gene panels updated since 2020"
+                    </div>
+                </div>
+                {#            </div>#}
+            </h4>
+            <div class="ui divider"></div>
+            <!--<h2 class="ui large header">Search Tool</h2>-->
+            <!--<div class="ui divider"></div>-->
+        </div>
+        {% if first_visit %}
+            <!-- first time entering page -->
+            <!-- User submitting form and summary table -->
+            <div class="ui horizontal segments">
+                <!--<div class="ui vertical segments">-->
+                <div class="ui teal segment">
+                    <h2 class="ui large teal header">Search Tool</h2>
+                    <p><i>Fill in the parameters below as completely as
+                        possible
+                        <br> for an accurate search in the PubMed
+                        articles database. </i></p>
+                    <br>
+                    <div class="ui form">
+                        <form method="get" action="{{ url_for('home_page') }}">
+                            <!-- Hier alle zooi voor in de form -->
+                            <!-- Fields links van de UI grid form -->
+                            <div class="field">
+                                <div class="ui accordion">
+                                    <div class="title">
+                                        <i class="dropdown icon"></i>
+                                        Phenotype descriptor
+                                    </div>
+                                    <div class="content">
+                                        <div class="ui section">
+                                            <p>Enter your phenotype descriptor
+                                                here. <br>
+                                                This is used to search in
+                                                PubMed.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="ui left icon input"><input
+                                            type="text"
+                                            placeholder="Your descriptors here"
+                                            name="pheno_input"
+                                            required><i
+                                            class="search icon"></i>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="ui accordion">
+                                        <div class="title">
+                                            <i class="dropdown icon"></i>
+                                            Article date limit
+                                        </div>
+                                        <div class="content">
+                                            <div class="ui section">
+                                                <p>This date limits the
+                                                    algorithm
+                                                    to search for <br>
+                                                    articles only published
+                                                    between
+                                                    the entered <br>
+                                                    date and present day.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ui calendar" id="rangestart">
+                                        <div class="ui input left icon">
+                                            <i class="calendar icon"></i>
+                                            <input type="text"
+                                                   placeholder="Fill earliest date to search from"
+                                                   name="calendar_input">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="inline field">
+                                    <div class="ui accordion">
+                                        <div class="title">
+                                            <i class="dropdown icon"></i>
+                                            Gene symbols
+                                        </div>
+                                        <div class="content">
+                                            <div class="ui section">
+                                                <p>Enter the gene symbols
+                                                    desired to be <br>
+                                                    searched for with the
+                                                    phenotye
+                                                    descriptor.
+                                                    <br>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                <textarea rows="3"
+                                          name="symbols_input"
+                                          placeholder="PRRT2&#10;KCNMA1"
+                                          required></textarea>
+                                    </div>
+                                </div>
+                                <input type="submit"
+                                       class="ui teal submit button"
+                                       value="Submit search"
+                                       name="submit_button">
+                                <a title="Button to start the search. Make sure all parameters are filled in correctly"><span><i
+                                        class="teal question circle icon"></i></span>
+                                </a>
+                        </form>
+                        <br><br>
+                    </div>
                 </div>
             </div>
-            {#            </div>#}
-        </h4>
-        <div class="ui divider"></div>
-        <!--<h2 class="ui large header">Search Tool</h2>-->
-        <!--<div class="ui divider"></div>-->
-    </div>
-    {% if first_time %}
-        <!-- first time entering page -->
+            </div>
+        {% endif %}
+
+
+    {% if results %}
         <!-- User submitting form and summary table -->
         <div class="ui horizontal segments">
             <!--<div class="ui vertical segments">-->
             <div class="ui teal segment">
                 <h2 class="ui large teal header">Search Tool</h2>
                 <p><i>Fill in the parameters below as completely as possible
-                    <br> for an accurate search in the PubMed
+                    <br>
+                    for an accurate search in the PubMed
                     articles database. </i></p>
                 <br>
                 <div class="ui form">
-                    <form method="get" action="{{ url_for('tool_page') }}">
+                    <form method="get" action="{{ url_for('home_page') }}">
                         <!-- Hier alle zooi voor in de form -->
                         <!-- Fields links van de UI grid form -->
                         <div class="field">
@@ -72,10 +183,12 @@
                                     <div class="content">
                                         <div class="ui section">
                                             <p>This date limits the algorithm
-                                                to search for <br>
-                                                articles only published between
-                                                the entered <br>
-                                                date and present day.
+                                                <br>
+                                                to search for articles only
+                                                <br>
+                                                published between the entered
+                                                <br>
+                                                date and the present daty.
                                             </p>
                                         </div>
                                     </div>
@@ -98,10 +211,11 @@
                                     </div>
                                     <div class="content">
                                         <div class="ui section">
-                                            <p>Enter the gene symbols
-                                                desired to be <br>
-                                                searched for with the phenotye
-                                                descriptor.
+                                            <p>Enter the gene symbols desired
+                                                <br>
+                                                to be searched for with the
+                                                <br>
+                                                henotye descriptor.
                                                 <br>
                                             </p>
                                         </div>
@@ -120,239 +234,142 @@
                                     class="teal question circle icon"></i></span>
                             </a>
                     </form>
-                    <br><br>
+                </div>
+                <br>
+                <!-- Fluid dropdown -->
+                <div class="inline field">
+                    <div class="ui accordion">
+                        <div class="title">
+                            <i class="dropdown icon"></i>
+                            Select algorithm focus
+                        </div>
+                        <div class="content">
+                            <div class="ui section">
+                                <p>Selecting one or several of the <br>
+                                    options below will urge the tool use <br>
+                                    these sections in its calculation to <br>
+                                    look for combinmations of the <br>
+                                    phenotype descriptor and gene symbols.
+
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <select multiple=""
+                            class="label ui selection fluid dropdown"
+                            name="focus_input"
+                            id="multiple_select">
+                        <option value="Title" selected>Title</option>
+                        <option value="Sentence" selected>Sentence</option>
+                        <option value="Abstract">Abstract</option>
+                        <option value="Multiple Abstracts">Multiple
+                            Abstracts
+                        </option>
+                    </select>
+                </div>
+                <div class="inline field">
+                    <div class="ui accordion">
+                        <div class="title">
+                            <i class="dropdown icon"></i>
+                            Job Title
+                        </div>
+                        <div class="content">
+                            <div class="ui section">
+                                <p>Set a title of the algorithm
+                                    search.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui left icon input"><input
+                            required
+                            type="text"
+                            placeholder="Job title"
+                            id="job-title"><i
+                            class=" clipboard icon"></i>
+                    </div>
                 </div>
             </div>
+            <br>
+            <div class="ui active inline loader loading-icon" style="display: none"></div>
+            <div class="view-results" style="display: none">
+                <a target="_blank" class="link-results" href="">
+                    <button class="ui teal upload button" id="download-button">
+                        View Results
+                    </button>
+                </a>
+            </div>
+            <br>
+            <div>
+                <button class="ui teal button algorithm-button">Perform
+                    algorithm
+                </button>
+                <a title="Button for algorithm testing purposes? (WIP)"><span><i
+                        class="teal question circle icon"></i></span>
+                </a>
+            </div>
         </div>
+
+        <!-- Summary Tabel -->
+        <div class="ui teal segment">
+            <h3 class="ui large teal header">Search results summary</h3>
+            <p><i>This section shows the most recent search data, and allows
+                the <br> user to download this data.</i>
+            </p>
+            <br>
+            {% if results %}
+                <a href="{{ url_for('download', results=[results]) }}">
+                    <button class="ui teal upload button" id="download-button">
+                        Download data
+                    </button>
+                </a>
+                <a title="Button to start the search. Make sure all parameters are filled in correctly"><span><i
+                        class="teal question circle icon"></i></span></a>
+            {% endif %}
+            <br>
+            <table class="ui sortable large celled table ">
+                <thead>
+                <tr>
+                    <th>Query</th>
+                    <th>Symbols Searched</th>
+                    <th># of articles found</th>
+                </tr>
+                </thead>
+                {% if results %}
+                    <tbody>
+                    <!-- Dit moet nog aangepast worden naar dynamisch in te vullen data vanuit de zoekopdracht -->
+                    {% for result in results %}
+                        <tr>
+                            <td data-label="Query">{{ result["search_word"] }}</td>
+                            <td data-label="Symbols">{{ result["searched_gene_symbols"] }}</td>
+                            <td data-label="# of articles found"><a
+                                    target="_blank"
+                                    href="{{ result["link"] }}">{{ result["amount_hits"] }}
+                            </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                {% endif %}
+            </table>
+            <form id="upload-form" method="post"
+                  enctype="multipart/form-data" class="upload-form">
+                <div class="title">
+                    <label for="file" class="upload-file-label">Select Gen
+                        Panel
+                        File</label>
+                </div>
+                <div>
+                    <input class="ui left icon input upload-file" name="file"
+                           type="file"
+                           id="file"
+                           title="Browse">
+                    <button class="ui teal upload button upload-button"
+                            id="upload-file-button"
+                            type="button">Upload
+                    </button>
+                </div>
+            </form>
         </div>
     {% endif %}
-
-
-{% if results %}
-    <!-- User submitting form and summary table -->
-    <div class="ui horizontal segments">
-        <!--<div class="ui vertical segments">-->
-        <div class="ui teal segment">
-            <h2 class="ui large teal header">Search Tool</h2>
-            <p><i>Fill in the parameters below as completely as possible <br>
-                for an accurate search in the PubMed
-                articles database. </i></p>
-            <br>
-            <div class="ui form">
-                <form method="get" action="{{ url_for('tool_page') }}">
-                    <!-- Hier alle zooi voor in de form -->
-                    <!-- Fields links van de UI grid form -->
-                    <div class="field">
-                        <div class="ui accordion">
-                            <div class="title">
-                                <i class="dropdown icon"></i>
-                                Phenotype descriptor
-                            </div>
-                            <div class="content">
-                                <div class="ui section">
-                                    <p>Enter your phenotype descriptor
-                                        here. <br>
-                                        This is used to search in PubMed.
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="ui left icon input"><input
-                                    type="text"
-                                    placeholder="Your descriptors here"
-                                    name="pheno_input"
-                                    required><i
-                                    class="search icon"></i>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <div class="ui accordion">
-                                <div class="title">
-                                    <i class="dropdown icon"></i>
-                                    Article date limit
-                                </div>
-                                <div class="content">
-                                    <div class="ui section">
-                                        <p>This date limits the algorithm <br>
-                                            to search for articles only <br>
-                                            published between the entered <br>
-                                            date and the present daty.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="ui calendar" id="rangestart">
-                                <div class="ui input left icon">
-                                    <i class="calendar icon"></i>
-                                    <input type="text"
-                                           placeholder="Fill earliest date to search from"
-                                           name="calendar_input">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="inline field">
-                            <div class="ui accordion">
-                                <div class="title">
-                                    <i class="dropdown icon"></i>
-                                    Gene symbols
-                                </div>
-                                <div class="content">
-                                    <div class="ui section">
-                                        <p>Enter the gene symbols desired <br>
-                                            to be searched for with the <br>
-                                            henotye descriptor.
-                                            <br>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <textarea rows="3"
-                                          name="symbols_input"
-                                          placeholder="PRRT2&#10;KCNMA1"
-                                          required></textarea>
-                            </div>
-                        </div>
-                        <input type="submit" class="ui teal submit button"
-                               value="Submit search" name="submit_button">
-                        <a title="Button to start the search. Make sure all parameters are filled in correctly"><span><i
-                                class="teal question circle icon"></i></span>
-                        </a>
-                </form>
-            </div>
-            <br>
-            <!-- Fluid dropdown -->
-            <div class="inline field">
-                <div class="ui accordion">
-                    <div class="title">
-                        <i class="dropdown icon"></i>
-                        Select algorithm focus
-                    </div>
-                    <div class="content">
-                        <div class="ui section">
-                            <p>Selecting one or several of the <br>
-                                options below will urge the tool use <br>
-                                these sections in its calculation to <br>
-                                look for combinmations of the <br>
-                                phenotype descriptor and gene symbols.
-
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <select multiple=""
-                        class="label ui selection fluid dropdown"
-                        name="focus_input"
-                        id="multiple_select">
-                    <option value="Title" selected>Title</option>
-                    <option value="Sentence" selected>Sentence</option>
-                    <option value="Abstract">Abstract</option>
-                    <option value="Multiple Abstracts">Multiple
-                        Abstracts
-                    </option>
-                </select>
-            </div>
-            <div class="inline field">
-                <div class="ui accordion">
-                    <div class="title">
-                        <i class="dropdown icon"></i>
-                        Job Title
-                    </div>
-                    <div class="content">
-                        <div class="ui section">
-                            <p>Set a title of the algorithm
-                                search.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="ui left icon input"><input
-                        required
-                        type="text"
-                        placeholder="Job title"
-                        id="job-title"><i
-                        class=" clipboard icon"></i>
-                </div>
-            </div>
-        </div>
-        <br>
-        <div class="view-results" style="display: none">
-{#            inline block#}
-            <a target="_blank" class="link-results" href="">
-                <button class="ui teal upload button" id="download-button">
-                    View Results
-                </button>
-            </a>
-        </div>
-        <br>
-        <div>
-            <button class="ui teal button algorithm-button">Perform algorithm
-            </button>
-            <a title="Button for algorithm testing purposes? (WIP)"><span><i
-                    class="teal question circle icon"></i></span>
-            </a>
-        </div>
-    </div>
-
-    <!-- Summary Tabel -->
-    <div class="ui teal segment">
-        <h3 class="ui large teal header">Search results summary</h3>
-        <p><i>This section shows the most recent search data, and allows
-            the <br> user to download this data.</i>
-        </p>
-        <br>
-        {% if results %}
-            <a href="{{ url_for('download', results=[results]) }}">
-                <button class="ui teal upload button" id="download-button">
-                    Download data
-                </button>
-            </a>
-            <a title="Button to start the search. Make sure all parameters are filled in correctly"><span><i
-                    class="teal question circle icon"></i></span></a>
-        {% endif %}
-        <br>
-        <table class="ui sortable large celled table ">
-            <thead>
-            <tr>
-                <th>Query</th>
-                <th>Symbols Searched</th>
-                <th># of articles found</th>
-            </tr>
-            </thead>
-            {% if results %}
-                <tbody>
-                <!-- Dit moet nog aangepast worden naar dynamisch in te vullen data vanuit de zoekopdracht -->
-                {% for result in results %}
-                    <tr>
-                        <td data-label="Query">{{ result["search_word"] }}</td>
-                        <td data-label="Symbols">{{ result["searched_gene_symbols"] }}</td>
-                        <td data-label="# of articles found"><a
-                                target="_blank"
-                                href="{{ result["link"] }}">{{ result["amount_hits"] }}
-                        </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            {% endif %}
-        </table>
-        <form id="upload-form" method="post"
-              enctype="multipart/form-data" class="upload-form">
-            <div class="title">
-                <label for="file" class="upload-file-label">Select Gen Panel
-                    File</label>
-            </div>
-            <div>
-                <input class="ui left icon input upload-file" name="file"
-                       type="file"
-                       id="file"
-                       title="Browse">
-                <button class="ui teal upload button upload-button"
-                        id="upload-file-button"
-                        type="button">Upload
-                </button>
-            </div>
-        </form>
-    </div>
-{% endif %}
 {% endblock %}
 
