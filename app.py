@@ -20,9 +20,13 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 result_ids = []
 articles = []
 
-
 @app.route('/')
 def home_page():
+    return render_template('homepage.html')
+
+
+@app.route('/tool')
+def tool_page():
     email = ''
     term = ''
     first_time = True
