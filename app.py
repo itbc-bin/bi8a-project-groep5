@@ -28,29 +28,17 @@ def error_page_not_found(error):
 
 @app.route('/')
 def home_page():
-    return render_template('home.html')
-
-
-@app.route('/about_project')
-def about_project_page():
-    return render_template('about_project.html')
-
-
-@app.route('/about_makers')
-def about_makers_page():
-    return render_template('about_makers.html')
-
-
-@app.route('/tool')
-def tool_page():
     term = ''
-    first_time = True
+    symbols = None
+    first_visit = True
+    first_visit = True
     results = []
     ids_data = []
     if request.args.get("pheno_input"):
-        first_time = False
+        first_visit = False
         term = request.args.get("pheno_input")
         words = request.args.getlist("symbols_input")
+        symbols = [symbol.strip() for symbol in words[0].split()]
         date = request.args.get('calendar_input')
         if date:
             search = PubmedSearch(search_word=term,
@@ -62,11 +50,22 @@ def tool_page():
         search.search_pubmed()
         results = search.results
         ids_data = search.ids_data
-        x = threading.Thread(target=parse_results, args=(search,))
-        x.daemon = True
-        x.start()
-    return render_template('tool.html', results=results,
-                           first_time=first_time, ids_data=ids_data, term=term)
+        thread = threading.Thread(target=parse_results, args=(search,))
+        thread.daemon = True
+        thread.start()
+    return render_template('home.html', results=results,
+                           first_visit=first_visit, ids_data=ids_data,
+                           term=term, symbols=symbols)
+
+
+@app.route('/about_project')
+def about_project_page():
+    return render_template('about_project.html')
+
+
+@app.route('/about_makers')
+def about_makers_page():
+    return render_template('about_makers.html')
 
 
 @app.route('/download', methods=['GET'])
@@ -118,7 +117,6 @@ def results_page():
 
 @app.route('/results/<result_id>', methods=['GET'])
 def individual_result(result_id):
-    print("naar de resultaten pagina")
     result_list, title = get_algorithm_results(result_id)
     if result_list:
         return render_template('individual_result.html', title=title,

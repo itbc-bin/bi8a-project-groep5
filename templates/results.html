@@ -5,6 +5,26 @@
         <div class="title">
             This is the all previous results makers page
         </div>
+{#        TODO: add date to database#}
+        <table class="ui sortable large celled table ">
+            <thead>
+            <tr>
+                <th>URL</th>
+                <th>Date</th>
+            </tr>
+            </thead>
+                <tbody>
+                <!-- Dit moet nog aangepast worden naar dynamisch in te vullen data vanuit de zoekopdracht -->
+                {% for result in url_results %}
+                    <tr>
+                        <td data-label="url"><a target="_blank"
+                                                href="{{ result['url'] }}">{{ result['title'] }}</a>
+                        </td>
+                        <td>{{ result['date'] }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+        </table>
     </div>
 {% endblock %}
 
