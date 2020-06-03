@@ -4,13 +4,13 @@ $(document).ready(function () {
 
     $('.ui.accordion').accordion();
 
-$('.trigger.example .accordion')
-  .accordion({
-    selector: {
-      trigger: '.title .icon'
-    }
-  })
-;
+    $('.trigger.example .accordion')
+        .accordion({
+            selector: {
+                trigger: '.title .icon'
+            }
+        })
+    ;
 
 
     // table sortable
@@ -18,7 +18,7 @@ $('.trigger.example .accordion')
 
     // request for co occurrence algorithm
     $(".algorithm-button").on("click", () => {
-        $(".extra-link").remove();
+        $(".view-results").css("display", "none");
         const id = '_' + Math.random().toString(36).substr(2, 9);
         const options = $('#multiple_select option:selected').toArray().map(item => item.text);
         const jobTitle = $('#job-title').val();
@@ -39,15 +39,15 @@ $('.trigger.example .accordion')
             url: `/results/${id}`,
             async: true,
             success: [function (response) {
-                $(".extra-link").remove();
                 $('.algorithm-button').attr('disabled', false);
-                $(".form").append(`<p class="extra-link">URL: <a href="${response.url}" target="_blank">Results</a></p>`);
+                $(".link-results").attr("href", response.url)
+                $(".view-results").css("display", "inline-block").after("<br>");
             }],
             error: function (response) {
-                $(".extra-link").remove();
                 $('.algorithm-button').attr('disabled', false);
                 $(".form").append(`<p>something went wrong 😞</p>`);
-                console.error(response);
+                $(".view-results").css("display", "inline-block").after("<br>");
+
             }
         })
     });
@@ -202,9 +202,7 @@ $(function () {
 
 $(function () {
     $('#upload-file-button').click(() => {
-        console.log('mandje');
         const formData = new FormData($('#upload-form')[0]);
-        console.log(formData)
         $.ajax({
             type: 'POST',
             url: '/upload_file',
