@@ -21,7 +21,7 @@ $(document).ready(function () {
         let title = document.getElementById('job-title').validity.valid;
 
         if (!title) {
-            alert('Please fill out a title')
+            alert('Please fill out a job title to perform the algorithm search.')
         } else {
             $(".view-results").css("display", "none");
             const id = '_' + Math.random().toString(36).substr(2, 9);
