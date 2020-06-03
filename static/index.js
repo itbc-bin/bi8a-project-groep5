@@ -17,45 +17,48 @@ $(document).ready(function () {
     $('.table.ui.sortable').tablesort();
 
     // request for co occurrence algorithm
-    $(".algorithm-button").on("click", () => {
+    $('.algorithm-button').on('click', () => {
         let title = document.getElementById('job-title').validity.valid;
+        let jobTitle;
+        if (title) {
+            jobTitle = document.getElementById('job-title').value;
 
-        if (!title) {
-            alert('Please fill out a job title to perform the algorithm search.')
         } else {
-            $(".view-results").css("display", "none");
-            const id = '_' + Math.random().toString(36).substr(2, 9);
-            const options = $('#multiple_select option:selected').toArray().map(item => item.text);
-            const jobTitle = $('#job-title').val();
-            const sendMail = $('#notify').is(":checked");
-            const data = {
-                options: options,
-                jobTitle: jobTitle,
-                sendMail: sendMail,
-                ids: ids,
-                term: term,
-                results: results,
-            };
-            $('.algorithm-button').attr('disabled', true);
-            $.ajax({
-                type: 'POST',
-                dataType: 'json',
-                data: {data: JSON.stringify(data)},
-                url: `/results/${id}`,
-                async: true,
-                success: [function (response) {
-                    $('.algorithm-button').attr('disabled', false);
-                    $(".link-results").attr("href", response.url)
-                    $(".view-results").css("display", "inline-block").after("<br>");
-                }],
-                error: function (response) {
-                    $('.algorithm-button').attr('disabled', false);
-                    $(".form").append(`<p>something went wrong 😞</p>`);
-                    $(".view-results").css("display", "inline-block").after("<br>");
+            jobTitle = `${term} and ${symbols.join(', ')}`;
 
-                }
-            })
         }
+        $('.view-results').css('display', 'none');
+        const id = '_' + Math.random().toString(36).substr(2, 9);
+        const options = $('#multiple_select option:selected').toArray().map(item => item.text);
+        const data = {
+            options: options,
+            jobTitle: jobTitle,
+            ids: ids,
+            term: term,
+            results: results,
+        };
+        $('.loading-icon').css('display', 'inline-block').after('<br>')
+        $('.algorithm-button').attr('disabled', true);
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            data: {data: JSON.stringify(data)},
+            url: `/results/${id}`,
+            async: true,
+            success: [function (response) {
+                $('.algorithm-button').attr('disabled', false);
+                $('.link-results').attr('href', response.url)
+                $('.loading-icon').css('display', 'none');
+                $('.view-results').css('display', 'inline-block').after('<br>');
+            }],
+            error: function (response) {
+                $('.algorithm-button').attr('disabled', false);
+                $('.form').append(`<p>something went wrong 😞</p>`);
+                $('.loading-icon').css('display', 'none');
+                $('.view-results').css('display', 'inline-block').after('<br>');
+
+            }
+        })
     });
 });
 
@@ -127,10 +130,10 @@ $(function () {
             direction = this.direction === 'asc' ? 1 : -1;
 
             self.$table.trigger('tablesort:start', [self]);
-            self.log("Sorting by " + this.index + ' ' + this.direction);
+            self.log('Sorting by ' + this.index + ' ' + this.direction);
 
             // Try to force a browser redraw
-            self.$table.css("display");
+            self.$table.css('display');
             // Run sorting asynchronously on a timeout to force browser redraw after
             // `tablesort:start` callback. Also avoids locking up the browser too much.
             setTimeout(function () {
@@ -157,7 +160,7 @@ $(function () {
                 self.log('Sort finished in ' + ((new Date()).getTime() - start.getTime()) + 'ms');
                 self.$table.trigger('tablesort:complete', [self]);
                 //Try to force a browser redraw
-                self.$table.css("display");
+                self.$table.css('display');
             }, unsortedValues.length > 2000 ? 200 : 10);
         },
 
@@ -218,7 +221,7 @@ $(function () {
             processData: false,
             dataType: 'json'
         }).done((data) => {
-            alert("file succesfully uploaded!")
+            alert('file succesfully uploaded!')
         })
     });
 });
@@ -226,12 +229,12 @@ $(function () {
 
 // sort function written by Yaris
 
-// const tableHeaders = document.querySelectorAll(".content-table th")
+// const tableHeaders = document.querySelectorAll('.content-table th')
 // tableHeaders.forEach(headerCell => {
-//     headerCell.addEventListener("click", () => {
+//     headerCell.addEventListener('click', () => {
 //         const tableElement = headerCell.parentElement.parentElement.parentElement;
 //         const headerIndex = Array.prototype.indexOf.call(headerCell.parentElement.children, headerCell);
-//         const currentIsAscending = headerCell.classList.contains("th-sort-asc");
+//         const currentIsAscending = headerCell.classList.contains('th-sort-asc');
 //
 //         sortTableByColumn(tableElement, headerIndex, !currentIsAscending);
 //     });
@@ -241,7 +244,7 @@ $(function () {
 // function sortTableByColumn(table, column, asc = true) {
 //     const dirModifier = asc ? 1 : -1;
 //     const tBody = table.tBodies[0];
-//     const rows = Array.from(tBody.querySelectorAll("tr"));
+//     const rows = Array.from(tBody.querySelectorAll('tr'));
 //
 //     // Sort each row
 //     const sortedRows = rows.sort((a, b) => {
@@ -260,8 +263,8 @@ $(function () {
 //     tBody.append(...sortedRows);
 //
 //     // Remember how the column is currently sorted
-//     table.querySelectorAll("th").forEach(th => th.classList.remove("th-sort-asc", "th-sort-desc"));
-//     table.querySelector(`th:nth-child(${column + 1})`).classList.toggle("th-sort-asc", asc);
-//     table.querySelector(`th:nth-child(${column + 1})`).classList.toggle("th-sort-desc", !asc);
+//     table.querySelectorAll('th').forEach(th => th.classList.remove('th-sort-asc', 'th-sort-desc'));
+//     table.querySelector(`th:nth-child(${column + 1})`).classList.toggle('th-sort-asc', asc);
+//     table.querySelector(`th:nth-child(${column + 1})`).classList.toggle('th-sort-desc', !asc);
 // }
 
