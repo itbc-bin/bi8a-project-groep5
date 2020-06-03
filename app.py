@@ -20,6 +20,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 result_ids = []
 articles = []
 
+
 @app.route('/')
 def home_page():
     return render_template('homepage.html')
@@ -27,7 +28,6 @@ def home_page():
 
 @app.route('/tool')
 def tool_page():
-    email = ''
     term = ''
     first_time = True
     results = []
@@ -36,14 +36,13 @@ def tool_page():
         first_time = False
         term = request.args.get("pheno_input")
         words = request.args.getlist("symbols_input")
-        email = request.args.get("input_mail")
         date = request.args.get('calendar_input')
         if date:
-            search = PubmedSearch(e_mail=email, search_word=term,
+            search = PubmedSearch(search_word=term,
                                   gene_symbols=words[0],
                                   date=date)
         else:
-            search = PubmedSearch(e_mail=email, search_word=term,
+            search = PubmedSearch(search_word=term,
                                   gene_symbols=words[0])
         search.search_pubmed()
         results = search.results
@@ -51,7 +50,7 @@ def tool_page():
         x = threading.Thread(target=parse_results, args=(search,))
         x.daemon = True
         x.start()
-    return render_template('index.html', email=email, results=results,
+    return render_template('index.html', results=results,
                            first_time=first_time, ids_data=ids_data, term=term)
 
 
@@ -73,20 +72,22 @@ def download():
 
 
 @app.route('/upload_file', methods=['POST'])
-def upldfile():
+def upload_file():
     # https://github.com/moremorefor/flask-fileupload-ajax-example
     if request.method == 'POST':
         files = request.files['file']
         if files and allowed_file(files.filename):
             filename = secure_filename(files.filename)
             app.logger.info('FileName: ' + filename)
-            updir = os.path.join(basedir, 'upload/')
+            updir = os.path.join(basedir, 'data_files')
             old_file = get_old_gen_panel_file()
-            file = os.path.join('upload', old_file)
-            old_dir = os.path.join(os.getcwd(),
-                                   f'upload{os.path.sep}old_files')
-            os.rename(os.path.join(os.getcwd(), file),
-                      os.path.join(old_dir, old_file))
+            if old_file:
+                file = os.path.join('data_files', old_file)
+                old_dir = os.path.join(os.getcwd(),
+                                       f'data_files{os.path.sep}old_files')
+                os.rename(os.path.join(os.getcwd(), file),
+                          os.path.join(old_dir, old_file))
+
             files.save(os.path.join(updir, filename))
             return jsonify(filename=filename)
         else:
@@ -147,7 +148,7 @@ def allowed_file(filename):
 
 
 def get_old_gen_panel_file():
-    for file in os.listdir(os.path.join(os.getcwd(), 'upload')):
+    for file in os.listdir(os.path.join(os.getcwd(), 'data_files')):
         if file.endswith('.txt'):
             return file
 
@@ -200,7 +201,6 @@ def get_results(ids):
             results_list.append(result)
     connction.close()
     return results_list
-
 
 
 def connection_database():
