@@ -46,16 +46,14 @@ class CoOccurrence:
         :param in_abstract: Boolean whether or not to inculde the abstract for
         the calculation. Default is true.
         :param in_multiple_abstracts: Boolean whether or not to inculde if a
-        combination occurs in multiple abstracts for the calculation. Default is
-        true.
+        combination occurs in multiple abstracts for the calculation. Default
+        is true.
         """
         self.__directory = os.path.join('co_occurrence_algorithm',
                                         'data_files')
         self.data_list = data
         self.url_id = url_id
         self.phenotype = [term]
-        self.gene_symbols = os.path.join(self.__directory,
-                                         'GenPanels_merged_DG-2.17.0.tsv')
         self.combinations = []
         self.title = title
         self.in_title = in_title
