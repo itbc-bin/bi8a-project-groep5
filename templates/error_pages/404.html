@@ -1,10 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>404 error</title>
-</head>
-<body>
-Deze pagina bestaat niet!
-</body>
-</html>
+{% extends 'navbar.html' %}
+{% block title %}404 Page Gene Panel Application{% endblock %}
+{% block error %}
+<div class="sixteen wide one column">
+        <div class="ui grid middle aligned segment red inverted"
+             style="height: 100%; margin: 0;">
+            <div class="ui column center aligned">
+                <div class="ui inverted statistic">
+                    <div class="value">404</div>
+                    <div class="label">Error</div>
+                </div>
+
+                <div class="ui message red inverted">
+                    <div class="header">Description</div>
+                    <p>Not found</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+
+{##}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>404 error</title>#}
+{#    <link rel="stylesheet" type="text/css"#}
+{#          href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.css">#}
+{#    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>#}
+{#    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>#}
+{#    <script src="{{ url_for('static', filename='index.js') }}"></script>#}
+{#    <script src="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.js"></script>#}
+{##}
+{#</head>#}
+{##}
+{#<body>#}
+{#<div class="center aligned stackable ui page grid">#}
+{#    <div class="ui huge attached tabular menu">#}
+{#        <a class="item" href="{{ url_for('home_page') }}">Home</a>#}
+{#        <a class="item">About the project</a>#}
+{#        <a class="item">TBD</a>#}
+{#        <a class="item">About the makers</a>#}
+{#        <a class="item" href="{{ url_for('tool_page') }}">Tool</a>#}
+{#    </div>#}
+{#    <div class="sixteen wide one column">#}
+{#        <div class="ui grid middle aligned segment red inverted"#}
+{#             style="height: 100%; margin: 0;">#}
+{#            <div class="ui column center aligned">#}
+{#                <div class="ui inverted statistic">#}
+{#                    <div class="value">404</div>#}
+{#                    <div class="label">Error</div>#}
+{#                </div>#}
+{##}
+{#                <div class="ui message red inverted">#}
+{#                    <div class="header">Description</div>#}
+{#                    <p>Not found</p>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
+{##}
+{##}
+{#</body>#}
+{##}
+{#<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.js"></script>#}
+{#</html>#}
+{##}
+{##}
