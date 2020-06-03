@@ -9,8 +9,7 @@ $(document).ready(function () {
             selector: {
                 trigger: '.title .icon'
             }
-        })
-    ;
+        });
 
 
     // table sortable
