@@ -286,15 +286,25 @@
             </div>
         </div>
         <br>
-        <button class="ui teal button algorithm-button">Perform algorithm
-        </button>
-        <a title="Button for algorithm testing purposes? (WIP)"><span><i
-                class="teal question circle icon"></i></span>
-        </a>
+        <div class="view-results" style="display: none">
+{#            inline block#}
+            <a target="_blank" class="link-results" href="">
+                <button class="ui teal upload button" id="download-button">
+                    View Results
+                </button>
+            </a>
+        </div>
+        <br>
+        <div>
+            <button class="ui teal button algorithm-button">Perform algorithm
+            </button>
+            <a title="Button for algorithm testing purposes? (WIP)"><span><i
+                    class="teal question circle icon"></i></span>
+            </a>
+        </div>
     </div>
 
     <!-- Summary Tabel -->
-
     <div class="ui teal segment">
         <h3 class="ui large teal header">Search results summary</h3>
         <p><i>This section shows the most recent search data, and allows
@@ -302,7 +312,7 @@
         </p>
         <br>
         {% if results %}
-            <a href="{{ url_for('download', results=[results], email=email) }}">
+            <a href="{{ url_for('download', results=[results]) }}">
                 <button class="ui teal upload button" id="download-button">
                     Download data
                 </button>
@@ -352,7 +362,6 @@
                         type="button">Upload
                 </button>
             </div>
-
         </form>
     </div>
 {% endif %}
