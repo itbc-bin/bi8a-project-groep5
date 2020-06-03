@@ -2,15 +2,18 @@
 {% block title %}Results for {{ title }}{% endblock %}
 {% block content %}
     <div class="center aligned stackable ui page grid">
-        <div class="content">
-            <h11>dit is de resultaten webpage</h11>
-        </div>
-        <div class="content">
-            {% for result in result_list %}
-                <div>Combination: {{ result['combination'] }},
-                    Score: {{ result['amount'] }}, met PubMed
-                    ID: {{ result['PMID'] }}</div>
-            {% endfor %}
+        <div class="sixteen wide one column">
+            <div>
+                <h2>Algorithm results</h2>
+            </div>
+            <div class="ui vertical segments">
+                {% for result in result_list %}
+                    <div class="ui segment">
+                        Combination: {{ result['combination'] }},
+                        Score: {{ result['amount'] }}, met PubMed
+                        ID: {{ result['PMID'] }}</div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}
