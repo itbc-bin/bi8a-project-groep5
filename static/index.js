@@ -27,7 +27,6 @@ $('.trigger.example .accordion')
             options: options,
             jobTitle: jobTitle,
             sendMail: sendMail,
-            email: email,
             ids: ids,
             term: term,
             results: results,
@@ -202,12 +201,14 @@ $(function () {
 
 
 $(function () {
-    $('#submit').click(() => {
-        const form_data = new FormData($('#upload-form')[0]);
+    $('#upload-file-button').click(() => {
+        console.log('mandje');
+        const formData = new FormData($('#upload-form')[0]);
+        console.log(formData)
         $.ajax({
             type: 'POST',
             url: '/upload_file',
-            data: form_data,
+            data: formData,
             contentType: false,
             processData: false,
             dataType: 'json'
