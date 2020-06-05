@@ -221,11 +221,14 @@ $(function () {
             processData: false,
             dataType: 'json'
         }).done((data) => {
-            alert('file succesfully uploaded!')
+            if (data.filename === 'Wrong extension') {
+                alert('Please upload a txt file.')
+            } else {
+                alert(`File (${data.filename}) succesfully uploaded!`)
+            }
         })
     });
 });
-
 
 
 //
