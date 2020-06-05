@@ -227,8 +227,11 @@ $(function () {
 });
 
 
-// sort function written by Yaris
 
+//
+// sort function written by Yaris
+//
+//
 // const tableHeaders = document.querySelectorAll('.content-table th')
 // tableHeaders.forEach(headerCell => {
 //     headerCell.addEventListener('click', () => {

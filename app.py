@@ -3,6 +3,7 @@ import random
 import string
 import threading
 import time
+import re
 
 import mysql.connector
 from flask import Flask, render_template, request, jsonify, send_file, json
@@ -30,7 +31,6 @@ def error_page_not_found(error):
 def home_page():
     term = ''
     symbols = None
-    first_visit = True
     first_visit = True
     results = []
     ids_data = []
@@ -73,15 +73,15 @@ def download():
     articles_data = request.args.get('results')
     articles_data = articles_data.replace("\'", "\"")
     articles_data = json.loads(articles_data)
-    with open('data_files/data.tsv', 'w') as file:
+    with open(os.path.join('data_files', 'data.tsv'), 'w') as file:
         file.write('Search Word\tAmount of hits\tlink\n')
         for article in articles_data:
             file.write(
                 f'{article["search_word"]}\t{article["amount_hits"]}'
                 f'\t{article["link"]}\n')
-    return send_file('data_files/data.tsv',
+    return send_file(os.path.join('data_files', 'data.tsv'),
                      mimetype='text/csv',
-                     attachment_filename='data_files/data.tsv',
+                     attachment_filename=os.path.join('data_files', 'data.tsv'),
                      as_attachment=True)
 
 
@@ -118,9 +118,10 @@ def results_page():
 @app.route('/results/<result_id>', methods=['GET'])
 def individual_result(result_id):
     result_list, title = get_algorithm_results(result_id)
+    table_list = get_results(result_list)
     if result_list:
         return render_template('individual_result.html', title=title,
-                               result_list=result_list)
+                               result_list=result_list, table_list=table_list)
     else:
         return render_template('error_pages/404.html'), 404
 
@@ -203,24 +204,27 @@ def parse_results(search):
     print('ready')
 
 
-def get_results(ids):
-    connction = connection_database()
-    cursor = connction.cursor()
-    results_list = []
-    for info in ids:
-        for pmid in info['ids']:
-            cursor.execute(
-                "select title, abstract from articles where "
-                "pubmed_id = '{}'".format(pmid))
-            data = cursor.fetchall()[0]
-            result = {
-                'Title': data[0],
-                'Abstract': data[1],
-                'PMID': pmid,
-            }
-            results_list.append(result)
-    connction.close()
-    return results_list
+def get_results(result_list):
+    connection = connection_database()
+    cursor = connection.cursor()
+    table_list = []
+
+    for info in result_list:
+        cursor.execute(
+            "select title, abstract, keywords, authors, publication_year, article_link, pubmed_id from articles where pubmed_id = '{}'".format(info['PMID']))
+        data = cursor.fetchall()[0]
+        result = {
+            'Title': cleanhtml(data[0]),
+            'Abstract': cleanhtml(data[1]),
+            'Keywords': data[2],
+            'Authors': data[3],
+            'Publication_year': data[4],
+            'Link': data[5],
+            'pmid': data[6]
+        }
+        table_list.append(result)
+    connection.close()
+    return table_list
 
 
 def get_all_previous_results():
@@ -248,6 +252,12 @@ def connection_database():
         password='blaat1234')
 
     return connection
+
+
+def cleanhtml(raw_html):
+    cleanr = re.compile('<.*?>')
+    cleantext = re.sub(cleanr, '', raw_html)
+    return cleantext
 
 
 if __name__ == '__main__':

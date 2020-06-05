@@ -1,19 +1,118 @@
 {% extends 'navbar.html' %}
 {% block title %}Results for {{ title }}{% endblock %}
+{% block js_variables %}
+    <script>
+        let result_list = {{ result_list | safe }};
+
+    </script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+{% endblock %}
 {% block content %}
+
+
+    <script>
+        function isArrayInArray(arr, item) {
+            let item_as_string = JSON.stringify(item);
+
+            let contains = arr.some(function (ele) {
+                return JSON.stringify(ele) === item_as_string;
+            });
+            return contains;
+        }
+        let pie_list = [['combination', 'amount']];
+
+        result_list.forEach(result => {
+            let data = [result.combination, result.amount]
+            if (! isArrayInArray(pie_list, data)){
+                pie_list.push(data)
+            }
+        })
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            {# Dit aanpassen naar de co-occurrence #}
+            var data = google.visualization.arrayToDataTable(pie_list);
+
+            var options = {
+                title: 'Amount of combinations found by algorithm'
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+            chart.draw(data, options);
+        }
+    </script>
+
     <div class="center aligned stackable ui page grid">
         <div class="sixteen wide one column">
             <div>
                 <h2>Algorithm results</h2>
             </div>
             <div class="ui vertical segments">
-                {% for result in result_list %}
-                    <div class="ui segment">
-                        Combination: {{ result['combination'] }},
-                        Score: {{ result['amount'] }}, met PubMed
-                        ID: {{ result['PMID'] }}</div>
-                {% endfor %}
+                {#            de tabel sortable maken levert een n^2 op aan displayed resultaten; dit is een probleempje #}
+                <table class="ui large celled table">
+                    <thead>
+                    <tr>
+                        <th> Combination</th>
+                        <th> Score</th>
+                        <th> PubMed ID</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for result in result_list %}
+                        <tr>
+                            <td data-label="Combination">{{ result['combination'] }} </td>
+                            <td data-label="Score">{{ result['amount'] }}</td>
+                            <td data-label="PubMed ID">{{ result['PMID'] }}</td>
+                        </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+            <div id="piechart" style="width: 900px; height: 500px;"></div>
+
+
+            <br><br>
+            <div>
+                <h3>General search results</h3>
+            </div>
+            <div class="left aligned ui segment">
+                <table class="ui sortable large celled table">
+                    <thead>
+                    <tr>
+                        <th> Title</th>
+                        <th> Abstract</th>
+                        <th> Keywords</th>
+                        <th> Authors</th>
+                        <th> Publication date</th>
+                        <th> Article link</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for results in table_list %}
+
+                        {#  Op basis van pubmed ID de data ophalen uit de database, connectie maken met de database #}
+                        <tr>
+                            <td data-label="Title">{{ results['Title'] }} </td>
+                            <td data-label="Abstract">{{ results['Abstract'] }} </td>
+                            <td data-label="Keywords">{{ results['Keywords'] }}</td>
+                            <td data-label="Authors">{{ results['Authors'] }}</td>
+                            <td data-label="Publication date">{{ results['Publication_year'] }}</td>
+                            <td data-label="Article link"><a
+                                    target="_blank"
+                                    href="{{ results["Link"] }}">{{ results["pmid"] }}
+                            </a>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div>
+                <div id="piechart" style="width: 900px; height: 500px;"></div>
             </div>
         </div>
     </div>
 {% endblock %}
+
