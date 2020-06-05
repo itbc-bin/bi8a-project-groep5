@@ -1,9 +1,9 @@
 import os
 import random
+import re
 import string
 import threading
 import time
-import re
 
 import mysql.connector
 from flask import Flask, render_template, request, jsonify, send_file, json
@@ -73,15 +73,17 @@ def download():
     articles_data = request.args.get('results')
     articles_data = articles_data.replace("\'", "\"")
     articles_data = json.loads(articles_data)
-    with open(os.path.join('data_files', 'data.tsv'), 'w') as file:
+    download_dir = os.path.join(basedir, 'data_files')
+    with open(os.path.join(download_dir, 'data.tsv'), 'w') as file:
         file.write('Search Word\tAmount of hits\tlink\n')
         for article in articles_data:
             file.write(
                 f'{article["search_word"]}\t{article["amount_hits"]}'
                 f'\t{article["link"]}\n')
-    return send_file(os.path.join('data_files', 'data.tsv'),
+    return send_file(os.path.join(download_dir, 'data.tsv'),
                      mimetype='text/csv',
-                     attachment_filename=os.path.join('data_files', 'data.tsv'),
+                     attachment_filename=os.path.join(download_dir,
+                                                      'data.tsv'),
                      as_attachment=True)
 
 
@@ -97,21 +99,20 @@ def upload_file():
             old_file = get_old_gen_panel_file()
             if old_file:
                 file = os.path.join('data_files', old_file)
-                old_dir = os.path.join(os.getcwd(),
-                                       f'data_files{os.path.sep}old_files')
-                os.rename(os.path.join(os.getcwd(), file),
+                old_dir = os.path.join(basedir,
+                                       os.path.join('data_files', 'old_files'))
+                os.rename(os.path.join(basedir, file),
                           os.path.join(old_dir, old_file))
 
             files.save(os.path.join(updir, filename))
             return jsonify(filename=filename)
         else:
-            return jsonify(filename='wrong extension')
+            return jsonify(filename='Wrong extension')
 
 
 @app.route('/results')
 def results_page():
     url_results = get_all_previous_results()
-    print(url_results)
     return render_template('results.html', url_results=url_results)
 
 
@@ -169,7 +170,7 @@ def allowed_file(filename):
 
 
 def get_old_gen_panel_file():
-    for file in os.listdir(os.path.join(os.getcwd(), 'data_files')):
+    for file in os.listdir(os.path.join(basedir, 'data_files')):
         if file.endswith('.txt'):
             return file
 
@@ -201,7 +202,6 @@ def parse_results(search):
     search.parse_results()
     search.insert_to_database()
     articles = search.get_articles()
-    print('ready')
 
 
 def get_results(result_list):
@@ -211,11 +211,13 @@ def get_results(result_list):
 
     for info in result_list:
         cursor.execute(
-            "select title, abstract, keywords, authors, publication_year, article_link, pubmed_id from articles where pubmed_id = '{}'".format(info['PMID']))
+            "select title, abstract, keywords, authors, publication_year, "
+            "article_link, pubmed_id from articles where "
+            "pubmed_id = '{}'".format(info['PMID']))
         data = cursor.fetchall()[0]
         result = {
-            'Title': cleanhtml(data[0]),
-            'Abstract': cleanhtml(data[1]),
+            'Title': get_clean_html(data[0]),
+            'Abstract': get_clean_html(data[1]),
             'Keywords': data[2],
             'Authors': data[3],
             'Publication_year': data[4],
@@ -254,10 +256,10 @@ def connection_database():
     return connection
 
 
-def cleanhtml(raw_html):
-    cleanr = re.compile('<.*?>')
-    cleantext = re.sub(cleanr, '', raw_html)
-    return cleantext
+def get_clean_html(raw_html):
+    html_pattern = re.compile(r'<.*?>')
+    clean_text = re.sub(html_pattern, '', raw_html)
+    return clean_text
 
 
 if __name__ == '__main__':
