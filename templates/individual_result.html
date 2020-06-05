@@ -12,17 +12,16 @@
 
     <script>
         function isArrayInArray(arr, item) {
-            let item_as_string = JSON.stringify(item);
+            const item_as_string = JSON.stringify(item);
 
-            let contains = arr.some(function (ele) {
+            return arr.some(function (ele) {
                 return JSON.stringify(ele) === item_as_string;
             });
-            return contains;
         }
         let pie_list = [['combination', 'amount']];
 
         result_list.forEach(result => {
-            let data = [result.combination, result.amount]
+            const data = [result.combination, result.amount]
             if (! isArrayInArray(pie_list, data)){
                 pie_list.push(data)
             }
@@ -32,13 +31,13 @@
 
         function drawChart() {
             {# Dit aanpassen naar de co-occurrence #}
-            var data = google.visualization.arrayToDataTable(pie_list);
+            const data = google.visualization.arrayToDataTable(pie_list);
 
-            var options = {
+            const options = {
                 title: 'Amount of combinations found by algorithm'
             };
 
-            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+            const chart = new google.visualization.PieChart(document.getElementById('piechart'));
 
             chart.draw(data, options);
         }
