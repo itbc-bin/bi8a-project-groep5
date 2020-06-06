@@ -68,7 +68,16 @@
                                 <td data-label="Combination">{{ combination }} </td>
                                 <td data-label="Score">{{ data['amount'] }}</td>
                                 <td data-label="PubMed ID">{{ ', '.join(data['PMIDS']) }}</td>
-                                <td data-label="In GenePanel file">{{ data['in_genepanel'] }}</td>
+                                {% if 'in_genepanel' in data %}
+                                    <td data-label="In GenePanel file">{{ data['in_genepanel'] }}</td>
+                                {% else %}
+                                    <td data-label="In GenePanel file">No
+                                        GenePanel file, please upload one on
+                                        the
+                                        <a href="{{ url_for('home_page') }}">home</a>
+                                        page after a search.
+                                    </td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                     {% endfor %}
