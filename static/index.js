@@ -56,19 +56,10 @@ $(document).ready(function () {
                 $('.form').append(`<p>something went wrong 😞</p>`);
                 $('.loading-icon').css('display', 'none');
                 $('.view-results').css('display', 'inline-block').after('<br>');
-
             }
         })
     });
 });
-
-
-$('.trigger.example .accordion')
-    .accordion({
-        selector: {
-            trigger: '.title .icon'
-        }
-    });
 
 $(function () {
     $('#rangestart').calendar({type: 'date'});
@@ -95,7 +86,6 @@ $(function () {
             self.sort($(this));
         });
         this.index = null;
-        this.$th = null;
         this.direction = null;
     };
 
@@ -189,8 +179,7 @@ $(function () {
                 && b.includes('-') && b.includes(':')) {
                 a = new Date(a);
                 b = new Date(b);
-            }
-            else if (!isNaN(parseInt(a)) && !isNaN(parseInt(b))) {
+            } else if (!isNaN(parseInt(a)) && !isNaN(parseInt(b))) {
                 a = parseInt(a);
                 b = parseInt(b);
             }
