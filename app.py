@@ -24,11 +24,21 @@ articles = []
 
 @app.errorhandler(404)
 def error_page_not_found(error):
+    """
+    Custom error handler page.
+    :param error: Type of HTTP error
+    :return: 404.html template.
+    """
     return render_template('error_pages/404.html')
 
 
 @app.route('/')
 def home_page():
+    """
+    Homepage, gets user input and performs pubmed search. Starts thread to
+    add results to database.
+    :return: home.html template.
+    """
     term = ''
     symbols = None
     first_visit = True
@@ -41,16 +51,16 @@ def home_page():
         symbols = [symbol.strip() for symbol in words[0].split()]
         date = request.args.get('calendar_input')
         if date:
-            search = PubmedSearch(search_word=term,
-                                  gene_symbols=words[0],
-                                  date=date)
+            pubmed_search = PubmedSearch(search_word=term,
+                                         gene_symbols=words[0],
+                                         date=date)
         else:
-            search = PubmedSearch(search_word=term,
-                                  gene_symbols=words[0])
-        search.search_pubmed()
-        results = search.results
-        ids_data = search.ids_data
-        thread = threading.Thread(target=parse_results, args=(search,))
+            pubmed_search = PubmedSearch(search_word=term,
+                                         gene_symbols=words[0])
+        pubmed_search.search_pubmed()
+        results = pubmed_search.results
+        ids_data = pubmed_search.ids_data
+        thread = threading.Thread(target=parse_results, args=(pubmed_search,))
         thread.daemon = True
         thread.start()
     return render_template('home.html', results=results,
@@ -60,22 +70,40 @@ def home_page():
 
 @app.route('/about_project')
 def about_project_page():
+    """
+    About project page.
+    :return: about_project.html template.
+    """
     return render_template('about_project.html')
 
 
 @app.route('/about_makers')
 def about_makers_page():
+    """
+    About makers page.
+    :return: about_makers.html template.
+    """
     return render_template('about_makers.html')
 
 
 @app.route('/results')
 def results_page():
+    """
+    Page with all of the algorithm results which are retrieved from database.
+    :return: results.html template.
+    """
     url_results = get_all_previous_results()
     return render_template('results.html', url_results=url_results)
 
 
 @app.route('/results/<result_id>', methods=['GET'])
 def individual_result(result_id):
+    """
+    Get an individual algorithm result based on id in url.
+    :param result_id: id of the algorithm searched, which is generated at each
+    search and added to database.
+    :return: individual_results.html template.
+    """
     gene_symbols = get_gene_symbols()
     result_list, title = get_algorithm_results(result_id)
     table_list = get_results(result_list)
@@ -90,6 +118,12 @@ def individual_result(result_id):
 
 @app.route('/results/<result_id>', methods=['POST'])
 def do_algorithm(result_id):
+    """
+    Perform the co-occurrence algorithm and add results to database based on
+    random generated id from url.
+    :param result_id: Random generated id (via Javascript) for the search
+    :return: json object with the status and url.
+    """
     global articles
 
     # wait until thread is ready inserting articles into database
@@ -127,6 +161,11 @@ def do_algorithm(result_id):
 
 @app.route('/download', methods=['GET'])
 def download():
+    """
+    Download the data from the table. Request is made via Ajax in Javascript
+    when user presses download button.
+    :return: tsv file containing the data.
+    """
     articles_data = request.args.get('results')
     articles_data = articles_data.replace("\'", "\"")
     articles_data = json.loads(articles_data)
@@ -146,6 +185,12 @@ def download():
 
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
+    """
+    Upload new gene panel file, and move old gene_panel file to old_files
+    directory.
+    :return: JSON object to let the user (via Javascript) know if the upload
+    was succesful.
+    """
     # https://github.com/moremorefor/flask-fileupload-ajax-example
     if request.method == 'POST':
         files = request.files['file']
@@ -168,17 +213,34 @@ def upload_file():
 
 
 def allowed_file(filename):
+    """
+    Helper function for upload file, only allow txt files to be uploaded.
+    :param filename: The name of the file.
+    :return: boolean whether or not the file ends with .txt.
+    """
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 
 def get_old_gen_panel_file():
+    """
+    Get the old gen_panel file after user uploaded new one, so it can be moved
+    to the old_files directory.
+    :return: The name of the old file.
+    """
     for file in os.listdir(os.path.join(basedir, 'data_files')):
         if file.endswith('.txt'):
             return file
 
 
 def get_algorithm_results(result_id):
+    """
+    Get the combination, amount, pmid and title of the co-occurrence algorithm
+    search from the database, and return the results.
+    :param result_id: The id of the algorithm search.
+    :return: List containing dictionarir with the combination, amount en pubmed
+    id. And a string which is the title of the search.
+    """
     results_list = []
     connction = connection_database()
     cursor = connction.cursor()
@@ -200,14 +262,26 @@ def get_algorithm_results(result_id):
     return results_list, title
 
 
-def parse_results(search):
+def parse_results(pubmed_search):
+    """
+    Parse the articles of the pubmed search, and add to database. This is
+    performed in another thread, so the user does not have to wait.
+    :param pubmed_search: The PubmedSearch object containing the data.
+    """
     global articles
-    search.parse_results()
-    search.insert_to_database()
-    articles = search.get_articles()
+    pubmed_search.parse_results()
+    pubmed_search.insert_to_database()
+    articles = pubmed_search.get_articles()
 
 
 def get_results(result_list):
+    """
+    Get the data of the articles from the database, from a list containing
+    multiple pubmed ids.
+    :param result_list: A list with dictionaries, containing the the pubmed id.
+    :return: List that can be used in individual_results.html with the data
+    of the articles.
+    """
     connection = connection_database()
     cursor = connection.cursor()
     table_list = []
@@ -233,6 +307,11 @@ def get_results(result_list):
 
 
 def get_all_previous_results():
+    """
+    Get all performed co-occurrence algorithm results from the databse.
+    :return: A list with dictionaries containing the url, title and date of
+    the algorithm search.
+    """
     connection = connection_database()
     cursor = connection.cursor()
     cursor.execute("select url_id, title, creation_date from results")
@@ -247,22 +326,45 @@ def get_all_previous_results():
 
 
 def process_results(result_list, gene_symbols):
+    """
+    Process the results of the algorithm. Add pubmed ids which belong to the
+    same combination to a new list of dictionaries where the pubmed ids are
+    merged. Also add if the gene symbol from the combination is already in the
+    genepanel file.
+    :param result_list: List containing the combinations, amounts, and pubmed
+    ids from the co-occurrence algorithm.
+    :param gene_symbols: A list containing all the gene symbols from the
+    gene panel file.
+    :return: A list with dictionaries containing the combination, its amount,
+    its pubmed ids and True/False whether or not in occurs in the genepanel
+    file.
+    """
     new_list = []
     for item in result_list:
         if combi_in_list(item['combination'], new_list):
             append_pmid(new_list, item['combination'], item['PMID'])
         else:
-            new_list.append({item['combination']: {
+            data = {item['combination']: {
                 'amount': item['amount'],
                 'PMIDS': [str(item['PMID'])],
-                'in_genepanel': item['combination'].split(',')[
-                                    0] in gene_symbols
                 }
-            })
+            }
+            if gene_symbols:
+                data[item['combination']]['in_genepanel'] = item['combination'].split(',')[0] in gene_symbols
+
+            new_list.append(data)
     return new_list
 
 
 def combi_in_list(combination, _list):
+    """
+    Return true if a comnbination is already in the new list, false when the
+    list does not contain the combination.
+    :param combination: The combination.
+    :param _list: The list containing all the combinations already added.
+    :return: Boolean whether or not the current combination already occures in
+    the list.
+    """
     for element in _list:
         if combination in element:
             return True
@@ -270,6 +372,12 @@ def combi_in_list(combination, _list):
 
 
 def append_pmid(_list, combination, pmid):
+    """
+    Append a pubmed id to its corresponding combination in the list.
+    :param _list: The list containing the combinations and its data.
+    :param combination: The combination to which the pubmed id should be added.
+    :param pmid: The pubmed that should be added.
+    """
     for element in _list:
         try:
             element[combination]['PMIDS'].append(str(pmid))
@@ -278,6 +386,13 @@ def append_pmid(_list, combination, pmid):
 
 
 def get_gene_symbols():
+    """
+    Get all of the gene symbols from the gene panel file. First check where
+    the gene panel file is saved. If there is no file in data)_files, check the
+    old_files directory.
+    :return: List containing the gene symbols, if there is no file present,
+    return empty list.
+    """
     data_dir = os.path.join(basedir, 'data_files')
     gen_panel_file = None
     for _file in os.listdir(data_dir):
@@ -289,11 +404,13 @@ def get_gene_symbols():
             if _file.endswith('.txt') and 'GenPanel' in _file:
                 gen_panel_file = os.path.join(
                     os.path.join(data_dir, 'old_files'), _file)
+
     gene_symbols = []
-    with open(gen_panel_file, 'r') as symbols_file:
-        symbols_file.readline()
-        for line in symbols_file:
-            gene_symbols.append(line.split('\t')[0].strip())
+    if gen_panel_file:
+        with open(gen_panel_file, 'r') as symbols_file:
+            symbols_file.readline()
+            for line in symbols_file:
+                gene_symbols.append(line.split('\t')[0].strip())
 
     return gene_symbols
 
@@ -312,6 +429,11 @@ def connection_database():
 
 
 def get_clean_html(raw_html):
+    """
+    Remove html tags from the abstract.
+    :param raw_html: Text containing html tags.
+    :return: Same text but without html tags.
+    """
     html_pattern = re.compile(r'<.*?>')
     clean_text = re.sub(html_pattern, '', raw_html)
     return clean_text
