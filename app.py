@@ -68,6 +68,63 @@ def about_makers_page():
     return render_template('about_makers.html')
 
 
+@app.route('/results')
+def results_page():
+    url_results = get_all_previous_results()
+    return render_template('results.html', url_results=url_results)
+
+
+@app.route('/results/<result_id>', methods=['GET'])
+def individual_result(result_id):
+    gene_symbols = get_gene_symbols()
+    result_list, title = get_algorithm_results(result_id)
+    table_list = get_results(result_list)
+    processed_results_list = process_results(result_list, gene_symbols)
+    if result_list:
+        return render_template('individual_result.html', title=title,
+                               result_list=result_list, table_list=table_list,
+                               processed_results_list=processed_results_list)
+    else:
+        return render_template('error_pages/404.html'), 404
+
+
+@app.route('/results/<result_id>', methods=['POST'])
+def do_algorithm(result_id):
+    global articles
+
+    # wait until thread is ready inserting articles into database
+    while not articles:
+        time.sleep(2)
+    # if result_id alreay taken, generate a new one
+    while result_id in result_ids:
+        result_id = f'''_{"".join(random.choice(
+            string.ascii_lowercase + string.digits) for _ in range(9))}'''
+    result_ids.append(result_id)
+    url = f'/results/{result_id}'
+
+    options = {'Title': False, 'Sentence': False, 'Abstract': False,
+               'Multiple Abstracts': False}
+
+    data = json.loads(request.form['data'])
+    selected_options = data['options']
+    job_title = data['jobTitle']
+    term = data['term']
+
+    for selected_option in selected_options:
+        options[selected_option] = True
+    co_occurrence = CoOccurrence(data=articles, url_id=result_id, term=term,
+                                 title=job_title, in_title=options['Title'],
+                                 in_sentence=options['Sentence'],
+                                 in_abstract=options['Abstract'],
+                                 in_multiple_abstracts=options[
+                                     'Multiple Abstracts'])
+    co_occurrence.pre_process_data()
+    co_occurrence.calculate_co_occurrence()
+    co_occurrence.get_co_occurence()
+    co_occurrence.save_to_db()
+    return json.dumps({'status': 'OK', 'url': url})
+
+
 @app.route('/download', methods=['GET'])
 def download():
     articles_data = request.args.get('results')
@@ -108,60 +165,6 @@ def upload_file():
             return jsonify(filename=filename)
         else:
             return jsonify(filename='Wrong extension')
-
-
-@app.route('/results')
-def results_page():
-    url_results = get_all_previous_results()
-    return render_template('results.html', url_results=url_results)
-
-
-@app.route('/results/<result_id>', methods=['GET'])
-def individual_result(result_id):
-    result_list, title = get_algorithm_results(result_id)
-    table_list = get_results(result_list)
-    if result_list:
-        return render_template('individual_result.html', title=title,
-                               result_list=result_list, table_list=table_list)
-    else:
-        return render_template('error_pages/404.html'), 404
-
-
-@app.route('/results/<result_id>', methods=['POST'])
-def do_algorithm(result_id):
-    global articles
-
-    # wait until thread is ready inserting articles into database
-    while not articles:
-        time.sleep(2)
-    # if result_id alreay taken, generate a new one
-    while result_id in result_ids:
-        result_id = f'''_{"".join(random.choice(
-            string.ascii_lowercase + string.digits) for _ in range(9))}'''
-    result_ids.append(result_id)
-    url = f'/results/{result_id}'
-
-    options = {'Title': False, 'Sentence': False, 'Abstract': False,
-               'Multiple Abstracts': False}
-
-    data = json.loads(request.form['data'])
-    selected_options = data['options']
-    job_title = data['jobTitle']
-    term = data['term']
-
-    for selected_option in selected_options:
-        options[selected_option] = True
-    co_occurrence = CoOccurrence(data=articles, url_id=result_id, term=term,
-                                 title=job_title, in_title=options['Title'],
-                                 in_sentence=options['Sentence'],
-                                 in_abstract=options['Abstract'],
-                                 in_multiple_abstracts=options[
-                                     'Multiple Abstracts'])
-    co_occurrence.pre_process_data()
-    co_occurrence.calculate_co_occurrence()
-    co_occurrence.get_co_occurence()
-    co_occurrence.save_to_db()
-    return json.dumps({'status': 'OK', 'url': url})
 
 
 def allowed_file(filename):
@@ -241,6 +244,58 @@ def get_all_previous_results():
     } for result in url_results]
     connection.close()
     return all_urls
+
+
+def process_results(result_list, gene_symbols):
+    new_list = []
+    for item in result_list:
+        if combi_in_list(item['combination'], new_list):
+            append_pmid(new_list, item['combination'], item['PMID'])
+        else:
+            new_list.append({item['combination']: {
+                'amount': item['amount'],
+                'PMIDS': [str(item['PMID'])],
+                'in_genepanel': item['combination'].split(',')[
+                                    0] in gene_symbols
+                }
+            })
+    return new_list
+
+
+def combi_in_list(combination, _list):
+    for element in _list:
+        if combination in element:
+            return True
+    return False
+
+
+def append_pmid(_list, combination, pmid):
+    for element in _list:
+        try:
+            element[combination]['PMIDS'].append(str(pmid))
+        except KeyError:
+            pass
+
+
+def get_gene_symbols():
+    data_dir = os.path.join(basedir, 'data_files')
+    gen_panel_file = None
+    for _file in os.listdir(data_dir):
+        if _file.endswith('.txt') and 'GenPanel' in _file:
+            gen_panel_file = os.path.join(data_dir, _file)
+            break
+    if not gen_panel_file:
+        for _file in os.listdir(os.path.join(data_dir, 'old_files')):
+            if _file.endswith('.txt') and 'GenPanel' in _file:
+                gen_panel_file = os.path.join(
+                    os.path.join(data_dir, 'old_files'), _file)
+    gene_symbols = []
+    with open(gen_panel_file, 'r') as symbols_file:
+        symbols_file.readline()
+        for line in symbols_file:
+            gene_symbols.append(line.split('\t')[0].strip())
+
+    return gene_symbols
 
 
 def connection_database():
