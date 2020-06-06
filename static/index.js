@@ -185,6 +185,10 @@ $(function () {
         asc: 'sorted ascending',
         desc: 'sorted descending',
         compare: function (a, b) {
+            if (!isNaN(parseInt(a)) && !isNaN(parseInt(b))) {
+                a = parseInt(a);
+                b = parseInt(b);
+            }
             if (a > b) {
                 return 1;
             } else if (a < b) {
