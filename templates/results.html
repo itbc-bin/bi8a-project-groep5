@@ -17,8 +17,7 @@
                 <tbody>
                 {% for result in url_results %}
                     <tr>
-                        <td data-label="url"><a target="_blank"
-                                                href="{{ result['url'] }}">{{ result['title'] }}</a>
+                        <td data-label="url"><a href="{{ result['url'] }}">{{ result['title'] }}</a>
                         </td>
                         <td>{{ result['date'] }}</td>
                     </tr>
