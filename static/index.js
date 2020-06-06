@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
     // dropdown functionality
     $('.label.ui.dropdown').dropdown();
 
@@ -226,6 +225,7 @@ $(function () {
         })
     });
 });
+//Get the button:
 
 
 //
