@@ -30,7 +30,6 @@
         google.charts.setOnLoadCallback(drawChart);
 
         function drawChart() {
-            {# Dit aanpassen naar de co-occurrence #}
             const data = google.visualization.arrayToDataTable(pie_list);
 
             const options = {
@@ -50,7 +49,6 @@
                     <h2 class="ui huge teal header">Algorithm results </h2>
                 </div>
                 <div class="ui vertical segments">
-                    {#            de tabel sortable maken levert een n^2 op aan displayed resultaten; dit is een probleempje #}
                     <table class="ui sortable large celled table">
                         <thead>
                         <tr>
@@ -87,9 +85,7 @@
             </div>
         </div>
     </div>
-    {#  --------------------------------------------------------------------------  #}
 
-    {#  Hieraan wordt nog gesleuteld; dit wordt de tabel in de accordion variant #}
     <div class="container">
         <div class="ui segment">
             <div class="sixteen wide one column">
