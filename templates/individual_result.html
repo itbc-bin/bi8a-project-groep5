@@ -5,7 +5,8 @@
         let result_list = {{ result_list | safe }};
 
     </script>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript"
+            src="https://www.gstatic.com/charts/loader.js"></script>
 {% endblock %}
 {% block content %}
 
@@ -18,11 +19,12 @@
                 return JSON.stringify(ele) === item_as_string;
             });
         }
+
         let pie_list = [['combination', 'amount']];
 
         result_list.forEach(result => {
             const data = [result.combination, result.amount]
-            if (! isArrayInArray(pie_list, data)){
+            if (!isArrayInArray(pie_list, data)) {
                 pie_list.push(data)
             }
         })
@@ -48,25 +50,29 @@
             <div>
                 <h2>Algorithm results</h2>
             </div>
-            <div class="ui vertical segments">
+            <div class="left aligned ui segment">
                 {#            de tabel sortable maken levert een n^2 op aan displayed resultaten; dit is een probleempje #}
-                <table class="ui large celled table">
+                <table class="ui sortable large celled table">
                     <thead>
                     <tr>
-                        <th> Combination</th>
-                        <th> Score</th>
-                        <th> PubMed ID</th>
+                        <th>Combination</th>
+                        <th>Score</th>
+                        <th>PubMed ID</th>
+                        <th>In GenePanel file</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for result in result_list %}
-                        <tr>
-                            <td data-label="Combination">{{ result['combination'] }} </td>
-                            <td data-label="Score">{{ result['amount'] }}</td>
-                            <td data-label="PubMed ID">{{ result['PMID'] }}</td>
-                        </tr>
-                        </tbody>
+                    {% for result in processed_results_list %}
+                        {% for combination, data in result.items() %}
+                            <tr>
+                                <td data-label="Combination">{{ combination }} </td>
+                                <td data-label="Score">{{ data['amount'] }}</td>
+                                <td data-label="PubMed ID">{{ ', '.join(data['PMIDS']) }}</td>
+                                <td data-label="In GenePanel file">{{ data['in_genepanel'] }}</td>
+                            </tr>
+                        {% endfor %}
                     {% endfor %}
+                    </tbody>
                 </table>
             </div>
             <div id="piechart" style="width: 900px; height: 500px;"></div>
@@ -90,8 +96,6 @@
                     </thead>
                     <tbody>
                     {% for results in table_list %}
-
-                        {#  Op basis van pubmed ID de data ophalen uit de database, connectie maken met de database #}
                         <tr>
                             <td data-label="Title">{{ results['Title'] }} </td>
                             <td data-label="Abstract">{{ results['Abstract'] }} </td>
