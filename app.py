@@ -351,8 +351,8 @@ def make_bold(part, all_combinations):
     for combi in all_combinations:
         gene_symbol = combi.split(', ')[0]
         phenotype = combi.split(', ')[1]
-        part = part.replace(gene_symbol, f'<b>{gene_symbol}</b>')
-        part = part.replace(phenotype, f'<b>{phenotype}</b>')
+        part = part.replace(gene_symbol, f'<strong>{gene_symbol}</strong>')
+        part = part.replace(phenotype, f'<strong>{phenotype}</strong>')
     return part
 
 
