@@ -106,8 +106,8 @@
                     <tbody>
                     {% for results in table_list %}
                         <tr>
-                            <td data-label="Title">{{ results['Title'] }} </td>
-                            <td data-label="Abstract">{{ results['Abstract'] }} </td>
+                            <td data-label="Title">{{ results['Title'] | safe}} </td>
+                            <td data-label="Abstract">{{ results['Abstract'] | safe}} </td>
                             <td data-label="Keywords">{{ results['Keywords'] }}</td>
                             <td data-label="Authors">{{ results['Authors'] }}</td>
                             <td data-label="Publication date">{{ results['Publication_year'] }}</td>
