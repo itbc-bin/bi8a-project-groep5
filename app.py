@@ -285,6 +285,8 @@ def get_results(result_list):
     connection = connection_database()
     cursor = connection.cursor()
     table_list = []
+    all_combinations = [info['combination'] for info in result_list]
+    all_combinations = list(set(all_combinations))
 
     for info in result_list:
         cursor.execute(
@@ -292,9 +294,11 @@ def get_results(result_list):
             "article_link, pubmed_id from articles where "
             "pubmed_id = '{}'".format(info['PMID']))
         data = cursor.fetchall()[0]
+        title = make_bold(data[0], all_combinations)
+        abstract = make_bold(data[1], all_combinations)
         result = {
-            'Title': get_clean_html(data[0]),
-            'Abstract': get_clean_html(data[1]),
+            'Title': title,
+            'Abstract': abstract,
             'Keywords': data[2],
             'Authors': data[3],
             'Publication_year': data[4],
@@ -325,6 +329,23 @@ def get_all_previous_results():
     return all_urls
 
 
+def make_bold(part, all_combinations):
+    """
+    Make the gene symbol and phenotype bold in the text. Which can be eiter
+    the title or the abstract.
+    :param part: Text of title or abstract.
+    :param all_combinations: List of combinations that should be made bold in
+    the text.
+    :return: The text with the gene symbols and phenotypes replaced to be bold.
+    """
+    for combi in all_combinations:
+        gene_symbol = combi.split(', ')[0]
+        phenotype = combi.split(', ')[1]
+        part = part.replace(gene_symbol, f'<b>{gene_symbol}</b>')
+        part = part.replace(phenotype, f'<b>{phenotype}</b>')
+    return part
+
+
 def process_results(result_list, gene_symbols):
     """
     Process the results of the algorithm. Add pubmed ids which belong to the
@@ -347,10 +368,11 @@ def process_results(result_list, gene_symbols):
             data = {item['combination']: {
                 'amount': item['amount'],
                 'PMIDS': [str(item['PMID'])],
-                }
+            }
             }
             if gene_symbols:
-                data[item['combination']]['in_genepanel'] = item['combination'].split(',')[0] in gene_symbols
+                data[item['combination']]['in_genepanel'] = \
+                    item['combination'].split(',')[0] in gene_symbols
 
             new_list.append(data)
     return new_list
@@ -436,7 +458,8 @@ def get_clean_html(raw_html):
     """
     html_pattern = re.compile(r'<.*?>')
     clean_text = re.sub(html_pattern, '', raw_html)
-    return clean_text
+    # return clean_text
+    return raw_html
 
 
 if __name__ == '__main__':
