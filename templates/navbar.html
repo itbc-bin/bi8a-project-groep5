@@ -11,25 +11,26 @@
     <script src="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.js"></script>
     {% block js_variables %}
     {% endblock %}
-
 </head>
 
 <body>
-<br>
-<div class="center aligned container stackable ui page grid">
+<div class="container">
+    <div class="ui centered grid">`
+        <div class="ui segment">
+            <div class="center aligned column">
+                <div class="ui compact huge attached compact tabular menu">
 
-    <div class="ui huge attached tabular menu">
-
-        <a class="item" href="{{ url_for('home_page') }}">Home</a>
-        <a class="item" href="{{ url_for('about_project_page') }}">About the
-            project</a>
-        <a class="item" href="{{ url_for('about_makers_page') }}">About the
-            makers</a>
-        <a class="item" href="{{ url_for('results_page') }}">Previous
-            results</a>
+                    <a class="item" href="{{ url_for('home_page') }}">Home</a>
+                    <a class="item" href="{{ url_for('about_project_page') }}">About the project</a>
+                    <a class="item" href="{{ url_for('about_makers_page') }}">About the makers</a>
+                    <a class="item" href="{{ url_for('results_page') }}">Previous results</a>
+                </div>
+                {% block error %}
+                {% endblock %}
+            </div>
+        </div>
     </div>
-    {% block error %}
-    {% endblock %}
+    <br>
 </div>
 
 {% block content %}

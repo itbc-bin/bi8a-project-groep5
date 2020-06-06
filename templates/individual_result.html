@@ -43,92 +43,118 @@
         }
     </script>
 
-    <div class="center aligned stackable ui page grid">
-        <div class="sixteen wide one column">
-            <div>
-                <h2>Algorithm results</h2>
+    <div class="ui segment">
+        <div class="aligned stackable ui page grid">
+            <div class="sixteen wide one column">
+                <div>
+                    <h2 class="ui huge teal header">Algorithm results </h2>
+                </div>
+                <div class="ui vertical segments">
+                    {#            de tabel sortable maken levert een n^2 op aan displayed resultaten; dit is een probleempje #}
+                    <table class="ui sortable large celled table">
+                        <thead>
+                        <tr>
+                            <th>Combination</th>
+                            <th>Score</th>
+                            <th>PubMed ID</th>
+                            <th>In GenePanel file</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for result in processed_results_list %}
+                            {% for combination, data in result.items() %}
+                                <tr>
+                                    <td data-label="Combination">{{ combination }} </td>
+                                    <td data-label="Score">{{ data['amount'] }}</td>
+                                    <td data-label="PubMed ID">{{ ', '.join(data['PMIDS']) }}</td>
+                                    {% if 'in_genepanel' in data %}
+                                        <td data-label="In GenePanel file">{{ data['in_genepanel'] }}</td>
+                                    {% else %}
+                                        <td data-label="In GenePanel file">No
+                                            GenePanel file, please upload one
+                                            on the <a
+                                                    href="{{ url_for('home_page') }}">home
+                                                page</a> after a search.
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div id="piechart" style="width: 900px; height: 500px;"></div>
             </div>
-            <div class="left aligned ui segment">
-                {#            de tabel sortable maken levert een n^2 op aan displayed resultaten; dit is een probleempje #}
-                <table class="ui sortable large celled table">
-                    <thead>
-                    <tr>
-                        <th>Combination</th>
-                        <th>Score</th>
-                        <th>PubMed ID</th>
-                        <th>In GenePanel file</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for result in processed_results_list %}
-                        {% for combination, data in result.items() %}
+        </div>
+    </div>
+    {#  --------------------------------------------------------------------------  #}
+
+    {#  Hieraan wordt nog gesleuteld; dit wordt de tabel in de accordion variant #}
+    <div class="container">
+        <div class="ui segment">
+            <div class="sixteen wide one column">
+                <div>
+                    <h2.1 class="ui teal huge header">These will be results
+                        updated
+                    </h2.1>
+                </div>
+                <div class="left aligned ui segment">
+                    <table class="ui sortable large celled table">
+                        <thead>
+                        <tr>
+                            <th>More info</th>
+                            <th>Title</th>
+                            <th>Article link</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for results in table_list %}
                             <tr>
-                                <td data-label="Combination">{{ combination }} </td>
-                                <td data-label="Score">{{ data['amount'] }}</td>
-
-                                <td data-label="PubMed ID">
-                                    {% for pmid in data['PMIDS'] %}
-                                        {% if loop.index == data['PMIDS']|length %}
-                                            <a href="#{{ pmid }}">{{ pmid }}</a>
-                                        {% else %}
-                                            <a href="#{{ pmid }}">{{ pmid }}, </a>
-                                        {% endif %}
-                                    {% endfor %}
+                                <td data-label="More info">
+                                    <div class="ui closed accordion">
+                                        <div class="title">
+                                            <i class="dropdown icon"></i>View
+                                        </div>
+                                        <div class="content">
+                                            <div class="ui section">
+                                                <p>
+                                                    <h2.2 class="ui teal tiny header">
+                                                        Year of publication
+                                                        (original):
+                                                    </h2.2>
+                                                    <br>
+                                                    {{ results['Publication_year'] }}<br><br>
+                                                    <h2.3 class="ui teal tiny header">
+                                                        Abstract:
+                                                    </h2.3>
+                                                    <br>
+                                                    {{ results['Abstract'] | safe }}<br><br>
+                                                    <h2.4 class="ui teal tiny header">
+                                                        Keywords:
+                                                    </h2.4>
+                                                    <br>
+                                                    {{ results['Keywords'] }}<br><br>
+                                                    <h2.5 class="ui teal tiny header">
+                                                        Authors:
+                                                    </h2.5>
+                                                    <br>
+                                                    {{ results['Authors'] }}<br>
+                                                    <br>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
-
-                                {#                                <td data-label="PubMed ID">{{ ', '.join(data['PMIDS']) }}</td>#}
-                                {% if 'in_genepanel' in data %}
-                                    <td data-label="In GenePanel file">{{ data['in_genepanel'] }}</td>
-                                {% else %}
-                                    <td data-label="In GenePanel file">No
-                                        GenePanel file, please upload one on
-                                        the
-                                        <a href="{{ url_for('home_page') }}">home</a>
-                                        page after a search.
-                                    </td>
-                                {% endif %}
+                                <td data-label="Title">{{ results['Title'] | safe }} </td>
+                                <td data-label="Article link"><a
+                                        target="_blank"
+                                        href="{{ results["Link"] }}">{{ results["pmid"] }}
+                                </a>
                             </tr>
                         {% endfor %}
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <div id="piechart" style="width: 900px; height: 500px;"></div>
-
-
-            <br><br>
-            <div>
-                <h3>General search results</h3>
-            </div>
-            <div class="left aligned ui segment">
-                <table class="ui sortable large celled table">
-                    <thead>
-                    <tr>
-                        <th> Title</th>
-                        <th> Abstract</th>
-                        <th> Keywords</th>
-                        <th> Authors</th>
-                        <th> Publication date</th>
-                        <th> Article link</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for results in table_list %}
-                        <tr>
-                            <td data-label="Title">{{ results['Title'] | safe }} </td>
-                            <td data-label="Abstract">{{ results['Abstract'] | safe }} </td>
-                            <td data-label="Keywords">{{ results['Keywords'] }}</td>
-                            <td data-label="Authors">{{ results['Authors'] }}</td>
-                            <td data-label="Publication date">{{ results['Publication_year'] }}</td>
-                            <td data-label="Article link"
-                                id="{{ results['pmid'] }}"><a
-                                    target="_blank"
-                                    href="{{ results["Link"] }}">{{ results["pmid"] }}
-                            </a>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
