@@ -316,12 +316,14 @@ def get_results(result_list):
     table_list = []
     all_combinations = [info['combination'] for info in result_list]
     all_combinations = list(set(all_combinations))
-
-    for info in result_list:
+    all_pmids = [info['PMID'] for info in result_list]
+    all_pmids = list(set(all_pmids))
+    print(all_pmids)
+    for pmid in all_pmids:
         cursor.execute(
             "select title, abstract, keywords, authors, publication_year, "
             "article_link, pubmed_id from articles where "
-            "pubmed_id = '{}'".format(info['PMID']))
+            "pubmed_id = '{}'".format(pmid))
         data = cursor.fetchall()[0]
         title = make_bold(data[0], all_combinations)
         abstract = make_bold(data[1], all_combinations)
