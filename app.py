@@ -1,6 +1,5 @@
 import os
 import random
-import re
 import string
 import threading
 import time
@@ -129,10 +128,12 @@ def do_algorithm(result_id):
     # wait until thread is ready inserting articles into database
     while not articles:
         time.sleep(2)
+
     # if result_id alreay taken, generate a new one
     while result_id in result_ids:
         result_id = f'''_{"".join(random.choice(
             string.ascii_lowercase + string.digits) for _ in range(9))}'''
+
     result_ids.append(result_id)
     url = f'/results/{result_id}'
 
@@ -212,25 +213,65 @@ def upload_file():
             return jsonify(filename='Wrong extension')
 
 
-def allowed_file(filename):
+def parse_results(pubmed_search):
     """
-    Helper function for upload file, only allow txt files to be uploaded.
-    :param filename: The name of the file.
-    :return: boolean whether or not the file ends with .txt.
+    Parse the articles of the pubmed search, and add to database. This is
+    performed in another thread, so the user does not have to wait.
+    :param pubmed_search: The PubmedSearch object containing the data.
     """
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+    global articles
+    pubmed_search.parse_results()
+    pubmed_search.insert_to_database()
+    articles = pubmed_search.get_articles()
 
 
-def get_old_gen_panel_file():
+def get_all_previous_results():
     """
-    Get the old gen_panel file after user uploaded new one, so it can be moved
-    to the old_files directory.
-    :return: The name of the old file.
+    Get all performed co-occurrence algorithm results from the databse.
+    :return: A list with dictionaries containing the url, title and date of
+    the algorithm search.
     """
-    for file in os.listdir(os.path.join(basedir, 'data_files')):
-        if file.endswith('.txt'):
-            return file
+    connection = connection_database()
+    cursor = connection.cursor()
+    cursor.execute("select url_id, title, creation_date from results")
+    url_results = cursor.fetchall()
+    all_urls = [{
+        'url': f'results/{result[0]}',
+        'title': result[1],
+        'date': result[2]
+    } for result in url_results]
+    connection.close()
+    return all_urls
+
+
+def get_gene_symbols():
+    """
+    Get all of the gene symbols from the gene panel file. First check where
+    the gene panel file is saved. If there is no file in data)_files, check the
+    old_files directory.
+    :return: List containing the gene symbols, if there is no file present,
+    return empty list.
+    """
+    data_dir = os.path.join(basedir, 'data_files')
+    gen_panel_file = None
+    for _file in os.listdir(data_dir):
+        if _file.endswith('.txt') and 'GenPanel' in _file:
+            gen_panel_file = os.path.join(data_dir, _file)
+            break
+    if not gen_panel_file:
+        for _file in os.listdir(os.path.join(data_dir, 'old_files')):
+            if _file.endswith('.txt') and 'GenPanel' in _file:
+                gen_panel_file = os.path.join(
+                    os.path.join(data_dir, 'old_files'), _file)
+
+    gene_symbols = []
+    if gen_panel_file:
+        with open(gen_panel_file, 'r') as symbols_file:
+            symbols_file.readline()
+            for line in symbols_file:
+                gene_symbols.append(line.split('\t')[0].strip())
+
+    return gene_symbols
 
 
 def get_algorithm_results(result_id):
@@ -260,18 +301,6 @@ def get_algorithm_results(result_id):
              'PMID': result[2]}
         )
     return results_list, title
-
-
-def parse_results(pubmed_search):
-    """
-    Parse the articles of the pubmed search, and add to database. This is
-    performed in another thread, so the user does not have to wait.
-    :param pubmed_search: The PubmedSearch object containing the data.
-    """
-    global articles
-    pubmed_search.parse_results()
-    pubmed_search.insert_to_database()
-    articles = pubmed_search.get_articles()
 
 
 def get_results(result_list):
@@ -308,25 +337,6 @@ def get_results(result_list):
         table_list.append(result)
     connection.close()
     return table_list
-
-
-def get_all_previous_results():
-    """
-    Get all performed co-occurrence algorithm results from the databse.
-    :return: A list with dictionaries containing the url, title and date of
-    the algorithm search.
-    """
-    connection = connection_database()
-    cursor = connection.cursor()
-    cursor.execute("select url_id, title, creation_date from results")
-    url_results = cursor.fetchall()
-    all_urls = [{
-        'url': f'results/{result[0]}',
-        'title': result[1],
-        'date': result[2]
-    } for result in url_results]
-    connection.close()
-    return all_urls
 
 
 def make_bold(part, all_combinations):
@@ -407,39 +417,30 @@ def append_pmid(_list, combination, pmid):
             pass
 
 
-def get_gene_symbols():
+def allowed_file(filename):
     """
-    Get all of the gene symbols from the gene panel file. First check where
-    the gene panel file is saved. If there is no file in data)_files, check the
-    old_files directory.
-    :return: List containing the gene symbols, if there is no file present,
-    return empty list.
+    Helper function for upload file, only allow txt files to be uploaded.
+    :param filename: The name of the file.
+    :return: boolean whether or not the file ends with .txt.
     """
-    data_dir = os.path.join(basedir, 'data_files')
-    gen_panel_file = None
-    for _file in os.listdir(data_dir):
-        if _file.endswith('.txt') and 'GenPanel' in _file:
-            gen_panel_file = os.path.join(data_dir, _file)
-            break
-    if not gen_panel_file:
-        for _file in os.listdir(os.path.join(data_dir, 'old_files')):
-            if _file.endswith('.txt') and 'GenPanel' in _file:
-                gen_panel_file = os.path.join(
-                    os.path.join(data_dir, 'old_files'), _file)
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
-    gene_symbols = []
-    if gen_panel_file:
-        with open(gen_panel_file, 'r') as symbols_file:
-            symbols_file.readline()
-            for line in symbols_file:
-                gene_symbols.append(line.split('\t')[0].strip())
 
-    return gene_symbols
+def get_old_gen_panel_file():
+    """
+    Get the old gen_panel file after user uploaded new one, so it can be moved
+    to the old_files directory.
+    :return: The name of the old file.
+    """
+    for file in os.listdir(os.path.join(basedir, 'data_files')):
+        if file.endswith('.txt'):
+            return file
 
 
 def connection_database():
-    """Make connection to the database
-    :return: The connection
+    """Make connection to the database.
+    :return: The connection.
     """
     connection = mysql.connector.connect(
         host='hannl-hlo-bioinformatica-mysqlsrv.mysql.database.azure.com',
@@ -448,18 +449,6 @@ def connection_database():
         password='blaat1234')
 
     return connection
-
-
-def get_clean_html(raw_html):
-    """
-    Remove html tags from the abstract.
-    :param raw_html: Text containing html tags.
-    :return: Same text but without html tags.
-    """
-    html_pattern = re.compile(r'<.*?>')
-    clean_text = re.sub(html_pattern, '', raw_html)
-    # return clean_text
-    return raw_html
 
 
 if __name__ == '__main__':
