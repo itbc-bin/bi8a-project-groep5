@@ -67,7 +67,18 @@
                             <tr>
                                 <td data-label="Combination">{{ combination }} </td>
                                 <td data-label="Score">{{ data['amount'] }}</td>
-                                <td data-label="PubMed ID">{{ ', '.join(data['PMIDS']) }}</td>
+
+                                <td data-label="PubMed ID">
+                                    {% for pmid in data['PMIDS'] %}
+                                        {% if loop.index == data['PMIDS']|length %}
+                                            <a href="#{{ pmid }}">{{ pmid }}</a>
+                                        {% else %}
+                                            <a href="#{{ pmid }}">{{ pmid }}, </a>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+
+                                {#                                <td data-label="PubMed ID">{{ ', '.join(data['PMIDS']) }}</td>#}
                                 {% if 'in_genepanel' in data %}
                                     <td data-label="In GenePanel file">{{ data['in_genepanel'] }}</td>
                                 {% else %}
@@ -106,12 +117,13 @@
                     <tbody>
                     {% for results in table_list %}
                         <tr>
-                            <td data-label="Title">{{ results['Title'] | safe}} </td>
-                            <td data-label="Abstract">{{ results['Abstract'] | safe}} </td>
+                            <td data-label="Title">{{ results['Title'] | safe }} </td>
+                            <td data-label="Abstract">{{ results['Abstract'] | safe }} </td>
                             <td data-label="Keywords">{{ results['Keywords'] }}</td>
                             <td data-label="Authors">{{ results['Authors'] }}</td>
                             <td data-label="Publication date">{{ results['Publication_year'] }}</td>
-                            <td data-label="Article link"><a
+                            <td data-label="Article link"
+                                id="{{ results['pmid'] }}"><a
                                     target="_blank"
                                     href="{{ results["Link"] }}">{{ results["pmid"] }}
                             </a>
