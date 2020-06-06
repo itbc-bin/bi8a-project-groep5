@@ -12,7 +12,6 @@ $(document).ready(function () {
             }
         });
 
-
     // table sortable
     $('.table.ui.sortable').tablesort();
 
@@ -51,12 +50,12 @@ $(document).ready(function () {
                 $('.loading-icon').css('display', 'none');
                 $('.view-results').css('display', 'inline-block').after('<br>');
             }],
-            error: function (response) {
+            error: [function (response) {
                 $('.algorithm-button').attr('disabled', false);
-                $('.form').append(`<p>something went wrong 😞</p>`);
+                $('.form').append(`<p>Something went wrong 😞</p>`);
                 $('.loading-icon').css('display', 'none');
                 $('.view-results').css('display', 'inline-block').after('<br>');
-            }
+            }]
         })
     });
 });
