@@ -185,7 +185,12 @@ $(function () {
         asc: 'sorted ascending',
         desc: 'sorted descending',
         compare: function (a, b) {
-            if (!isNaN(parseInt(a)) && !isNaN(parseInt(b))) {
+            if (a.includes('-') && a.includes(':')
+                && b.includes('-') && b.includes(':')) {
+                a = new Date(a);
+                b = new Date(b);
+            }
+            else if (!isNaN(parseInt(a)) && !isNaN(parseInt(b))) {
                 a = parseInt(a);
                 b = parseInt(b);
             }
