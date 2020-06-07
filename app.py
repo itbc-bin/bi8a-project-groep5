@@ -315,10 +315,12 @@ def get_results(result_list):
     cursor = connection.cursor()
     table_list = []
     all_combinations = [info['combination'] for info in result_list]
-    all_combinations = list(set(all_combinations))
     all_pmids = [info['PMID'] for info in result_list]
+
+    # remove duplicates
+    all_combinations = list(set(all_combinations))
     all_pmids = list(set(all_pmids))
-    print(all_pmids)
+
     for pmid in all_pmids:
         cursor.execute(
             "select title, abstract, keywords, authors, publication_year, "
