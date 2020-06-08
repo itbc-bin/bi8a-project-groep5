@@ -124,40 +124,46 @@ def do_algorithm(result_id):
     :return: json object with the status and url.
     """
     global articles
-
     # wait until thread is ready inserting articles into database
     while not articles:
         time.sleep(2)
+    if articles[0] != 'no articles':
+        # if result_id alreay taken, generate a new one
+        while result_id in result_ids:
+            result_id = f'''_{"".join(random.choice(
+                string.ascii_lowercase + string.digits) for _ in range(9))}'''
 
-    # if result_id alreay taken, generate a new one
-    while result_id in result_ids:
-        result_id = f'''_{"".join(random.choice(
-            string.ascii_lowercase + string.digits) for _ in range(9))}'''
+        result_ids.append(result_id)
+        url = f'/results/{result_id}'
 
-    result_ids.append(result_id)
-    url = f'/results/{result_id}'
+        options = {'Title': False, 'Sentence': False, 'Abstract': False,
+                   'Multiple Abstracts': False}
 
-    options = {'Title': False, 'Sentence': False, 'Abstract': False,
-               'Multiple Abstracts': False}
+        data = json.loads(request.form['data'])
+        selected_options = data['options']
+        job_title = data['jobTitle']
+        term = data['term']
 
-    data = json.loads(request.form['data'])
-    selected_options = data['options']
-    job_title = data['jobTitle']
-    term = data['term']
-
-    for selected_option in selected_options:
-        options[selected_option] = True
-    co_occurrence = CoOccurrence(data=articles, url_id=result_id, term=term,
-                                 title=job_title, in_title=options['Title'],
-                                 in_sentence=options['Sentence'],
-                                 in_abstract=options['Abstract'],
-                                 in_multiple_abstracts=options[
-                                     'Multiple Abstracts'])
-    co_occurrence.pre_process_data()
-    co_occurrence.calculate_co_occurrence()
-    co_occurrence.get_co_occurence()
-    co_occurrence.save_to_db()
-    return json.dumps({'status': 'OK', 'url': url})
+        for selected_option in selected_options:
+            options[selected_option] = True
+        co_occurrence = CoOccurrence(data=articles, url_id=result_id,
+                                     term=term,
+                                     title=job_title,
+                                     in_title=options['Title'],
+                                     in_sentence=options['Sentence'],
+                                     in_abstract=options['Abstract'],
+                                     in_multiple_abstracts=options[
+                                         'Multiple Abstracts'])
+        co_occurrence.pre_process_data()
+        co_occurrence.calculate_co_occurrence()
+        co_occurr = co_occurrence.get_co_occurence()
+        if co_occurr:
+            co_occurrence.save_to_db()
+            return json.dumps({'status': 'OK', 'url': url})
+        else:
+            return json.dumps({'status': 'NOK', 'url': ''})
+    else:
+        return json.dumps({'status': 'NOK', 'url': ''})
 
 
 @app.route('/download', methods=['GET'])
@@ -222,7 +228,11 @@ def parse_results(pubmed_search):
     global articles
     pubmed_search.parse_results()
     pubmed_search.insert_to_database()
-    articles = pubmed_search.get_articles()
+    _articles = pubmed_search.get_articles()
+    if not _articles:
+        articles = ['no articles']
+    else:
+        articles = _articles
 
 
 def get_all_previous_results():
