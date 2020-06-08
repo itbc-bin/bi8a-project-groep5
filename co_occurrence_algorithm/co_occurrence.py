@@ -46,16 +46,14 @@ class CoOccurrence:
         :param in_abstract: Boolean whether or not to inculde the abstract for
         the calculation. Default is true.
         :param in_multiple_abstracts: Boolean whether or not to inculde if a
-        combination occurs in multiple abstracts for the calculation. Default is
-        true.
+        combination occurs in multiple abstracts for the calculation. Default
+        is true.
         """
         self.__directory = os.path.join('co_occurrence_algorithm',
                                         'data_files')
         self.data_list = data
         self.url_id = url_id
         self.phenotype = [term]
-        self.gene_symbols = os.path.join(self.__directory,
-                                         'GenPanels_merged_DG-2.17.0.tsv')
         self.combinations = []
         self.title = title
         self.in_title = in_title
@@ -242,13 +240,11 @@ class CoOccurrence:
         Then all of the possible combinations will be generated and saved to
         a new list.
         """
-        genes = []
-        with open(self.gene_symbols, 'r') as genes_file:
-            genes_file.readline()
-            for line in genes_file:
-                gene = line.split('\t')[0]
-                genes.append(gene.strip())
-
+        connection = self.__connection_database()
+        cursor = connection.cursor()
+        cursor.execute("select gene_symbol from gene_symbols")
+        gene_symbols = cursor.fetchall()
+        genes = [gene_symbol[0].strip() for gene_symbol in gene_symbols]
         self.combinations = list(itertools.product(genes, self.phenotype))
 
     @staticmethod

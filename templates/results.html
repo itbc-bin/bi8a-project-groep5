@@ -1,12 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Results for {{ title }}</title>
-</head>
-<body>
-{% for result in result_list %}
-    <div>Combination: {{ result['combination'] }}, Score: {{ result['amount'] }}, met PubMed ID: {{ result['PMID'] }}</div>
-{% endfor %}
-</body>
-</html>
+{% extends 'navbar.html' %}
+{% block title %}Results{% endblock %}
+{% block content %}
+    <div class="center aligned stackable ui page grid">
+        <br>
+        <div class="sixteen wide one column">
+        <br>
+                <h2 class="ui huge teal header">Previous algorithm results</h2>
+
+            <table class="ui sortable large celled table">
+                <thead>
+                <tr>
+                    <th>URL</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for result in url_results %}
+                    <tr>
+                        <td data-label="url"><a href="{{ result['url'] }}">{{ result['title'] }}</a>
+                        </td>
+                        <td>{{ result['date'] }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
