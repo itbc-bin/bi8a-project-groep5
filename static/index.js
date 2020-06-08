@@ -38,16 +38,20 @@ $(document).ready(function () {
             url: `/results/${id}`,
             async: true,
             success: [function (response) {
-                $('.algorithm-button').attr('disabled', false);
-                $('.link-results').attr('href', response.url)
-                $('.loading-icon').css('display', 'none');
-                $('.view-results').css('display', 'inline-block').after('<br>');
+                if (response.status === 'OK') {
+                    $('.algorithm-button').attr('disabled', false);
+                    $('.link-results').attr('href', response.url)
+                    $('.loading-icon').css('display', 'none');
+                    $('.view-results').css('display', 'inline-block').after('<br>');
+                } else {
+                    $('.loading-icon').css('display', 'none');
+                    $('.form').append(`<p>No algorithm results, try another search!</p>`);
+                }
             }],
             error: [function (response) {
                 $('.algorithm-button').attr('disabled', false);
                 $('.form').append(`<p>Something went wrong 😞</p>`);
                 $('.loading-icon').css('display', 'none');
-                $('.view-results').css('display', 'inline-block').after('<br>');
             }]
         })
     });
