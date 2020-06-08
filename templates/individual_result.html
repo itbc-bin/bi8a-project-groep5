@@ -1,0 +1,155 @@
+{% extends 'navbar.html' %}
+{% block title %}Results for {{ title }}{% endblock %}
+{% block js_variables %}
+    <script>
+        let result_list = {{ result_list | safe }};
+
+    </script>
+    <script type="text/javascript"
+            src="https://www.gstatic.com/charts/loader.js"></script>
+{% endblock %}
+{% block content %}
+    <script>
+        function isArrayInArray(arr, item) {
+            const item_as_string = JSON.stringify(item);
+
+            return arr.some(function (ele) {
+                return JSON.stringify(ele) === item_as_string;
+            });
+        }
+
+        let pie_list = [['combination', 'amount']];
+
+        result_list.forEach(result => {
+            const data = [result.combination, result.amount]
+            if (!isArrayInArray(pie_list, data)) {
+                pie_list.push(data)
+            }
+        })
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            const data = google.visualization.arrayToDataTable(pie_list);
+
+            const options = {
+                title: 'Amount of combinations found by algorithm'
+            };
+
+            const chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+            chart.draw(data, options);
+        }
+    </script>
+
+    <div class="center aligned stackable ui page grid">
+        <br>
+        <div class="sixteen wide one column">
+            <br>
+            <h2 class="ui huge teal header">Algorithm results </h2>
+
+            <div class="ui vertical segments">
+                <table class="ui sortable large celled table">
+                    <thead>
+                    <tr>
+                        <th>Combination</th>
+                        <th>Score</th>
+                        <th>PubMed ID</th>
+                        <th>In GenePanel file</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for result in processed_results_list %}
+                        {% for combination, data in result.items() %}
+                            <tr>
+                                <td data-label="Combination">{{ combination }} </td>
+                                <td data-label="Score">{{ data['amount'] }}</td>
+                                <td data-label="PubMed ID">{{ ', '.join(data['PMIDS']) }}</td>
+                                {% if 'in_genepanel' in data %}
+                                    <td data-label="In GenePanel file">{{ data['in_genepanel'] }}</td>
+                                {% else %}
+                                    <td data-label="In GenePanel file">No
+                                        GenePanel file, please upload one
+                                        on the <a
+                                                href="{{ url_for('home_page') }}">home
+                                            page</a> after a search.
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div id="piechart" style="width: 900px; height: 500px;"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="ui segment">
+            <div class="sixteen wide one column">
+                <div>
+                    <h2.1 class="ui teal huge header">Article results</h2.1>
+                </div>
+                <div class="left aligned ui segment">
+                    <table class="ui sortable large celled table">
+                        <thead>
+                        <tr>
+                            <th>More info</th>
+                            <th>Title</th>
+                            <th>Article link</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for results in table_list %}
+                            <tr>
+                                <td data-label="More info">
+                                    <div class="ui closed accordion">
+                                        <div class="title">
+                                            <i class="dropdown icon"></i>View
+                                        </div>
+                                        <div class="content">
+                                            <div class="ui section">
+                                                <p>
+                                                    <h2.2 class="ui teal tiny header">
+                                                        Year of publication
+                                                        (original):
+                                                    </h2.2>
+                                                    <br>
+                                                    {{ results['Publication_year'] }}<br><br>
+                                                    <h2.3 class="ui teal tiny header">
+                                                        Abstract:
+                                                    </h2.3>
+                                                    <br>
+                                                    {{ results['Abstract'] | safe }}<br><br>
+                                                    <h2.4 class="ui teal tiny header">
+                                                        Keywords:
+                                                    </h2.4>
+                                                    <br>
+                                                    {{ results['Keywords'] }}<br><br>
+                                                    <h2.5 class="ui teal tiny header">
+                                                        Authors:
+                                                    </h2.5>
+                                                    <br>
+                                                    {{ results['Authors'] }}<br>
+                                                    <br>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td data-label="Title">{{ results['Title'] | safe }} </td>
+                                <td data-label="Article link"><a
+                                        target="_blank"
+                                        href="{{ results["Link"] }}">{{ results["pmid"] }}
+                                </a>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

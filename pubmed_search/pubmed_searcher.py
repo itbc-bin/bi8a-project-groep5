@@ -14,17 +14,15 @@ Class to perform a search in the pubmed database.
 
 class PubmedSearch:
 
-    def __init__(self, e_mail, search_word, gene_symbols,
+    def __init__(self, search_word, gene_symbols,
                  date='January 1, 2010'):
         """
         Initialization method of the pubmed search.
-        :param e_mail: The users email, which will be used for the Entrez
-        search.
         :param search_word: The phenotype from user input.
         :param gene_symbols: The gene symbols from user input.
         :param date: The date from user input. (default is 2010/01/01).
         """
-        self.email = e_mail
+        self.email = 'John.Doe@gmail.com'
         self.api_key = '70603012ca2859e88695f0dae2d6dc988308'
         self.search_word = search_word.strip()
         self.gene_symbols = gene_symbols

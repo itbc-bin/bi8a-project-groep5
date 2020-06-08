@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
+    <script src="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.js"></script>
+    {% block js_variables %}
+    {% endblock %}
+</head>
+
+<body>
+<div class="container">
+    <div class="ui centered grid">
+        <div class="ui segment">
+            <div class="center aligned column">
+                <div class="ui compact huge attached compact tabular menu">
+                    <a class="item" href="{{ url_for('home_page') }}">Tool</a>
+                    <a class="item" href="{{ url_for('about_project_page') }}">About the project</a>
+                    <a class="item" href="{{ url_for('about_makers_page') }}">About the makers</a>
+                    <a class="item" href="{{ url_for('results_page') }}">Previous results</a>
+                </div>
+                {% block error %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+
+{% block content %}
+{% endblock %}
+
+</body>
+</html>
+
+
