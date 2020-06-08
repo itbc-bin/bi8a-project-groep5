@@ -26,8 +26,6 @@
                 </div>
             </h4>
             <div class="ui divider"></div>
-            <!--<h2 class="ui large header">Search Tool</h2>-->
-            <!--<div class="ui divider"></div>-->
         </div>
         {% if first_visit %}
             <!-- first time entering page -->
@@ -134,11 +132,9 @@
             </div>
         {% endif %}
 
-
     {% if results %}
         <!-- User submitting form and summary table -->
         <div class="ui horizontal segments">
-            <!--<div class="ui vertical segments">-->
             <div class="ui teal segment">
                 <h2 class="ui large teal header">Search Tool</h2>
                 <p><i>Fill in the parameters below as completely as possible
@@ -210,7 +206,7 @@
                                                 <br>
                                                 to be searched for with the
                                                 <br>
-                                                henotye descriptor.
+                                                phenotye descriptor.
                                                 <br>
                                             </p>
                                         </div>
@@ -245,7 +241,6 @@
                                     these sections in its calculation to <br>
                                     look for combinmations of the <br>
                                     phenotype descriptor and gene symbols.
-
                                 </p>
                             </div>
                         </div>
@@ -331,7 +326,6 @@
                 </thead>
                 {% if results %}
                     <tbody>
-                    <!-- Dit moet nog aangepast worden naar dynamisch in te vullen data vanuit de zoekopdracht -->
                     {% for result in results %}
                         <tr>
                             <td data-label="Query">{{ result["search_word"] }}</td>
