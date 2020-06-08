@@ -1,14 +1,22 @@
 {% extends 'navbar.html' %}
-{% block title %}About Project Page Gene Panel Application{% endblock %}
+{% block title %}About Project{% endblock %}
 {% block content %}
     <div class="center aligned stackable ui page grid">
         <div class="sixteen wide one column">
+            <br>
             <div>
-                <h2>About the Project</h2>
+                <h2 class="ui teal huge header">About the Project</h2>
+                {# Van het radboud UMC, achtergrond info en doel --> kijken naar onderwijs online #}
+                <div class="ui teal segment">
+                    <p>
+                        Gene diagnostics has several applications in which genetic data is analysed looking for disease variants. The Radboud UMC uses gene panels to do their gene diagnostics, consisting of filtered disease variants originating from WES analysis. Prior, these gene panels were only updated once every 3 months, meaning that the gene panels were at all times 0-3 months outdated. We were prompted by the Radboud to work on a tool aimed at keeping the gene panels consistently up to date with the newest articles.
+                        <br><br>
+                        To keep the gene panels up to date, this web application was designed. The aim of the webtool is to provide an easy interface which should be both easily accessible and simple in usage for any researcher.
+                        <br><br>
+                        On the initial visit to the page, the user is met with an explained interface allowing for a few simplistic search terms to go digging for recent PubMed articles. Once these are found, the website updates and the user can see their results. Besides this, a variety of other options are also available to the user; they can download their results or add them to the gene panels database, or repeat their search with more specific parameters. Choosing to repeat the search with more specific parameters makes use of a co-occurrence algorithm, which based on terminology tries to look for similarities in the articles to decide which articles are more relevant to tailor to the user's needs.
+                    </p>
+                </div>
             </div>
-
         </div>
     </div>
 {% endblock %}
-
-

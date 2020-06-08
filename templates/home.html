@@ -1,27 +1,27 @@
 {% extends 'navbar.html' %}
-{% block title %}Tool Page Gene Panel Application{% endblock %}
+{% block title %}Tool Page{% endblock %}
 {% block js_variables %}
     <script>
         let results = {{ results | safe }};
         let ids = {{ ids_data | safe }};
         let term = '{{ term | safe }}';
-        let symbols = {{ symbols | safe }}
+        let symbols =
+        {{ symbols | safe }}
     </script>
 {% endblock %}
 {% block content %}
     <div class="center aligned stackable ui page grid">
         <div class="sixteen wide one column">
+            <br>
             <!-- HEADERS -->
             <!-- Sub top of the page -->
             <h4 class="ui teal icon header item">
                 <i class="search icon"></i>
-                {#            <div class="content">#}
                 <div class="content">PubMed Article Searcher
                     <div class="sub header">
                         "Keeping gene panels updated since 2020"
                     </div>
                 </div>
-                {#            </div>#}
             </h4>
             <div class="ui divider"></div>
             <!--<h2 class="ui large header">Search Tool</h2>-->
@@ -31,7 +31,6 @@
             <!-- first time entering page -->
             <!-- User submitting form and summary table -->
             <div class="ui horizontal segments">
-                <!--<div class="ui vertical segments">-->
                 <div class="ui teal segment">
                     <h2 class="ui large teal header">Search Tool</h2>
                     <p><i>Fill in the parameters below as completely as
@@ -41,8 +40,6 @@
                     <br>
                     <div class="ui form">
                         <form method="get" action="{{ url_for('home_page') }}">
-                            <!-- Hier alle zooi voor in de form -->
-                            <!-- Fields links van de UI grid form -->
                             <div class="field">
                                 <div class="ui accordion">
                                     <div class="title">
@@ -149,8 +146,6 @@
                 <br>
                 <div class="ui form">
                     <form method="get" action="{{ url_for('home_page') }}">
-                        <!-- Hier alle zooi voor in de form -->
-                        <!-- Fields links van de UI grid form -->
                         <div class="field">
                             <div class="ui accordion">
                                 <div class="title">
@@ -201,7 +196,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="inline field">
                                 <div class="ui accordion">
                                     <div class="title">
@@ -309,7 +303,7 @@
         </div>
 
         <!-- Summary Tabel -->
-        <div class="ui segment">
+        <div class="ui teal segment">
             <h3 class="ui large teal header">Search results summary</h3>
             <p><i>This section shows the most recent search data, and allows
                 the <br> user to download this data.</i>
@@ -371,4 +365,3 @@
         </div>
     {% endif %}
 {% endblock %}
-
